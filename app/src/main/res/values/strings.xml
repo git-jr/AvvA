@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">AvvA</string>
+    <string name="accessibility_service_label">AvvA Accessibility Service</string>
+    <string name="accessibility_service_description">Accessibility Service for AvvA</string>
 </resources>

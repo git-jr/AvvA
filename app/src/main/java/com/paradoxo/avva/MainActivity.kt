@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.paradoxo.avva.ui.theme.accessibilityService.MyAccessibilityService
 import com.paradoxo.avva.ui.theme.AvvATheme
 
 class MainActivity : ComponentActivity() {
@@ -21,6 +22,9 @@ class MainActivity : ComponentActivity() {
 
         val intent = Intent(this, OverlayService::class.java)
         startService(intent)
+
+        val accessibilityService = Intent(this, MyAccessibilityService::class.java)
+        startService(accessibilityService)
 
         setContent {
             AvvATheme {

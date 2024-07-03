@@ -11,7 +11,10 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
 import android.view.WindowManager
+import android.view.accessibility.AccessibilityEvent
+import android.view.accessibility.AccessibilityManager
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.Modifier
@@ -53,10 +56,24 @@ class OverlayService : Service() {
         composeView.setContent {
             Image(
                 painter = painterResource(id = R.drawable.avva_logo_floating),
-                contentDescription = "assistant",
+                contentDescription = "image avva assistant",
                 modifier = Modifier
                     .size(100.dp)
-                    .clip(RoundedCornerShape(20.dp)),
+                    .clip(RoundedCornerShape(20.dp))
+                    .clickable {
+                        val intent = Intent("com.paradoxo.avva.ACTION_IMAGE_CLICKED")
+                        sendBroadcast(intent)
+
+                        val manager: AccessibilityManager =
+                            this.getSystemService(ACCESSIBILITY_SERVICE) as AccessibilityManager
+                        val accessibilityEvent =
+                            AccessibilityEvent.obtain(AccessibilityEvent.TYPE_VIEW_CLICKED)
+                        accessibilityEvent.packageName = "com.paradoxo.avva"
+                        accessibilityEvent.className = this::class.java.name
+                        accessibilityEvent.text.add("Imagem avva assistant clicada")
+                        accessibilityEvent.contentDescription = "image avva assistant clicked"
+                        manager.sendAccessibilityEvent(accessibilityEvent)
+                    },
             )
         }
 
@@ -110,6 +127,7 @@ class OverlayService : Service() {
                         }
 
                         MotionEvent.ACTION_MOVE -> {
+                            Log.d("params", "params: x: ${params.x} y: ${params.y}")
                             Log.d("AD", "Action Move")
                             params.x = initialX + (event.rawX - initialTouchX).toInt()
                             params.y = initialY + (event.rawY - initialTouchY).toInt()
