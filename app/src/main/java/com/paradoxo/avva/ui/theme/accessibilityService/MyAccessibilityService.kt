@@ -35,6 +35,7 @@ class MyAccessibilityService : AccessibilityService() {
     }
 
     override fun onInterrupt() {}
+
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
 
         Log.d("NodeServices", "entrou no onAccessibilityEvent")
@@ -45,6 +46,9 @@ class MyAccessibilityService : AccessibilityService() {
         }
         Log.d("NodeServices", "source $source")
 
+        getAllTextsFromScreen(rootInActiveWindow)
+        getChildForTextsFromScreen(rootInActiveWindow)
+        getListAllClickableNodes(rootInActiveWindow)
 
         val rowNode: AccessibilityNodeInfo? = getListItemNodeInfo(source)
         if (rowNode == null) {
@@ -52,7 +56,6 @@ class MyAccessibilityService : AccessibilityService() {
             return
         }
         Log.d("NodeServices", "rowNode $rowNode")
-
 
         // Using this parent, get references to both child nodes, the label, and the
         // checkbox.
@@ -103,6 +106,96 @@ class MyAccessibilityService : AccessibilityService() {
             // Não é um item de lista, continue navegando para cima na árvore.
             current = parent
         }
+    }
+
+    private fun getAllTextsFromScreen(nodeInfo: AccessibilityNodeInfo?): List<CharSequence> {
+        val texts = mutableListOf<CharSequence>()
+
+        fun collectTexts(node: AccessibilityNodeInfo?) {
+            if (node == null) return
+
+            Log.d("NodeServicesNode", "node: $node")
+            if (node.text != null) {
+                texts.add(node.text)
+            }
+
+            for (i in 0 until node.childCount) {
+                collectTexts(node.getChild(i))
+            }
+        }
+
+
+        collectTexts(nodeInfo)
+        Log.d("NodeServicesText", "texts: $texts")
+        return texts
+    }
+
+    private fun getListAllClickableNodes(nodeInfo: AccessibilityNodeInfo?): List<String> {
+        val clickableNodes = mutableListOf<String>()
+
+        fun collectClickableNodes(node: AccessibilityNodeInfo?) {
+            if (node == null) return
+
+            if (node.isClickable && node.text != null) {
+                clickableNodes.add(node.text.toString())
+            }
+
+            for (i in 0 until node.childCount) {
+                val internalNode = node.getChild(i)
+
+                if (internalNode != null && internalNode.isClickable && internalNode.text != null) {
+                    clickableNodes.add(internalNode.text.toString())
+
+                    // se o texto for igual a "Teste1234456" então clicar no nó
+                    if (internalNode.text.toString() == "Teste1234456") {
+                        internalNode.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+                        return@collectClickableNodes
+                    }
+                }
+
+                collectClickableNodes(internalNode)
+            }
+        }
+
+        collectClickableNodes(nodeInfo)
+        return clickableNodes
+    }
+
+
+    private fun getChildForTextsFromScreen(nodeInfo: AccessibilityNodeInfo?): List<CharSequence> {
+        val texts = mutableListOf<CharSequence>()
+        val allNodes = mutableListOf<AccessibilityNodeInfo>()
+
+        fun collectTexts(node: AccessibilityNodeInfo?) {
+            if (node == null) return
+
+            Log.d("NodeServicesNode", "node: $node")
+            if (node.text != null) {
+                texts.add(node.text)
+                allNodes.add(node)
+            }
+
+            for (i in 0 until node.childCount) {
+                val internalNode = node.getChild(i)
+                if (internalNode.text != null) {
+                    allNodes.add(internalNode)
+                    texts.add(internalNode.text)
+                    collectTexts(internalNode)
+                }
+            }
+        }
+
+
+        collectTexts(nodeInfo)
+        Log.d("NodeServicesText", "texts: $texts")
+        allNodes.forEach { internalNode ->
+            Log.d("internalNode", "----------------------")
+            Log.d("internalNode", "node.text: ${internalNode.text}")
+            Log.d("internalNode", "node.text coordes: ${internalNode.isHeading}")
+            Log.d("internalNode", "parent: ${internalNode.parent.text}")
+            Log.d("internalNode", "parent: ${internalNode.parent}")
+        }
+        return texts
     }
 
 

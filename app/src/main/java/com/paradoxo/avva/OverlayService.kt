@@ -14,9 +14,13 @@ import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityManager
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.ComposeView
@@ -54,27 +58,27 @@ class OverlayService : Service() {
 
         val composeView = ComposeView(this)
         composeView.setContent {
-            Image(
-                painter = painterResource(id = R.drawable.avva_logo_floating),
-                contentDescription = "image avva assistant",
-                modifier = Modifier
-                    .size(100.dp)
-                    .clip(RoundedCornerShape(20.dp))
-                    .clickable {
-                        val intent = Intent("com.paradoxo.avva.ACTION_IMAGE_CLICKED")
-                        sendBroadcast(intent)
+            Column {
+                Image(
+                    painter = painterResource(id = R.drawable.avva_logo_floating),
+                    contentDescription = "image avva assistant",
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(RoundedCornerShape(20.dp))
+                )
+                Spacer(modifier = Modifier.size(10.dp))
 
-                        val manager: AccessibilityManager =
-                            this.getSystemService(ACCESSIBILITY_SERVICE) as AccessibilityManager
-                        val accessibilityEvent =
-                            AccessibilityEvent.obtain(AccessibilityEvent.TYPE_VIEW_CLICKED)
-                        accessibilityEvent.packageName = "com.paradoxo.avva"
-                        accessibilityEvent.className = this::class.java.name
-                        accessibilityEvent.text.add("Imagem avva assistant clicada")
-                        accessibilityEvent.contentDescription = "image avva assistant clicked"
-                        manager.sendAccessibilityEvent(accessibilityEvent)
+                Button(
+                    onClick = {
+                        startServices()
                     },
-            )
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(20.dp))
+                        .align(alignment = Alignment.CenterHorizontally)
+                ) {
+                    Text("Testar")
+                }
+            }
         }
 
         composeView.setViewTreeLifecycleOwner(lifecycleOwner)
@@ -141,6 +145,32 @@ class OverlayService : Service() {
 
         windowManager.addView(composeView, params)
     }
+
+    private fun startServices() {
+        try {
+            val intent = Intent("com.paradoxo.avva.ACTION_IMAGE_CLICKED")
+            sendBroadcast(intent)
+
+            val manager: AccessibilityManager =
+                this.getSystemService(ACCESSIBILITY_SERVICE) as AccessibilityManager
+            val accessibilityEvent =
+                AccessibilityEvent.obtain(AccessibilityEvent.TYPE_VIEW_CLICKED)
+            accessibilityEvent.packageName = "com.paradoxo.avva"
+            accessibilityEvent.className = this::class.java.name
+            accessibilityEvent.text.add("Imagem avva assistant clicada")
+            accessibilityEvent.contentDescription = "image avva assistant clicked"
+            manager.sendAccessibilityEvent(accessibilityEvent)
+        } catch (e: Exception) {
+            Log.e("OverlayService", "Error: $e")
+            // abrir a tela de configuracoes com servico de acessibilidade
+
+            val intent = Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            startActivity(intent)
+
+        }
+    }
+
 
     override fun onBind(intent: Intent): IBinder? {
         return null
