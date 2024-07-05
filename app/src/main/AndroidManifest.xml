@@ -4,6 +4,15 @@
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -21,14 +30,18 @@
             android:theme="@style/Theme.AvvA">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+
+                <action android:name="android.intent.action.ASSIST" />
+                <action android:name="android.intent.extra.ASSIST_CONTEXT" />
+                <action android:name="android.intent.action.SEARCH_LONG_PRESS" />
             </intent-filter>
         </activity>
 
+<!--        assessor services-->
         <service android:name=".OverlayService" />
 
-        <service android:name=".ui.theme.accessibilityService.MyAccessibilityService"
+        <service android:name=".ui.accessibilityService.AvvaAccessibilityService"
             android:exported="true"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
             android:label="@string/accessibility_service_label">
@@ -40,6 +53,26 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility_service_config" />
         </service>
+
+
+
+<!--        launcher services-->
+        <service
+            android:name=".ui.launcherService.AvvaVoiceInteractionService"
+            android:exported="true"
+            android:permission="android.permission.BIND_VOICE_INTERACTION">
+            <intent-filter>
+                <action android:name="android.service.voice.VoiceInteractionService" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.voice_interaction"
+                android:resource="@xml/assist_metadata" />
+        </service>
+
+        <service
+            android:name=".ui.launcherService.AvvaAssistantSessionService"
+            android:permission="android.permission.BIND_VOICE_INTERACTION" />
 
     </application>
 

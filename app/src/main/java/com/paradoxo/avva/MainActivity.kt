@@ -2,6 +2,8 @@ package com.paradoxo.avva
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -12,7 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.paradoxo.avva.ui.theme.accessibilityService.MyAccessibilityService
+import com.paradoxo.avva.ui.launcherService.AvvaVoiceInteractionService
 import com.paradoxo.avva.ui.theme.AvvATheme
 
 class MainActivity : ComponentActivity() {
@@ -20,11 +22,18 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        val intent = Intent(this, OverlayService::class.java)
-        startService(intent)
+        val voiceServiceIntent = Intent(this, AvvaVoiceInteractionService::class.java)
+        voiceServiceIntent.setAction(Intent.ACTION_ASSIST)
 
-        val accessibilityService = Intent(this, MyAccessibilityService::class.java)
-        startService(accessibilityService)
+        Handler(Looper.getMainLooper()).postDelayed({
+            startService(voiceServiceIntent)
+        }, 1000)
+
+//        val intent = Intent(this, OverlayService::class.java)
+//        startService(intent)
+//
+//        val accessibilityService = Intent(this, MyAccessibilityService::class.java)
+//        startService(accessibilityService)
 
         setContent {
             AvvATheme {

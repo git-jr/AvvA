@@ -1,4 +1,4 @@
-package com.paradoxo.avva.ui.theme.accessibilityService
+package com.paradoxo.avva.ui.accessibilityService
 
 import android.accessibilityservice.AccessibilityService
 import android.content.BroadcastReceiver
@@ -11,7 +11,7 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.annotation.RequiresApi
 
-class MyAccessibilityService : AccessibilityService() {
+class AvvaAccessibilityService : AccessibilityService() {
 
     private lateinit var receiver: BroadcastReceiver
 
