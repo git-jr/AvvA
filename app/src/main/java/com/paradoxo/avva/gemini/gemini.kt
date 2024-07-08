@@ -5,6 +5,8 @@ import com.google.ai.client.generativeai.Chat
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.Content
 import com.google.ai.client.generativeai.type.content
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class Gemini {
     var defaultInstruction = ""
@@ -43,7 +45,6 @@ class Gemini {
         imageList: List<Bitmap> = emptyList(),
         onResponse: (String) -> Unit = {}
     ) {
-
         val inputContent: Content = content {
             imageList.forEach {
                 image(it)
@@ -56,11 +57,15 @@ class Gemini {
             chat.sendMessage(inputContent).let { response ->
                 print(response.text)
                 response.text?.let {
-                    onResponse(it)
+                    withContext(Dispatchers.Main) {
+                        onResponse(it)
+                    }
                 }
             }
         } catch (e: Exception) {
-            onResponse("Desculpe, houve um erro ao tentar processar a resposta.")
+            withContext(Dispatchers.Main) {
+                onResponse("Desculpe, houve um erro ao tentar processar a resposta.")
+            }
             e.printStackTrace()
         }
     }

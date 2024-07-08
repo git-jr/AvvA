@@ -1,48 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:id="@+id/layout_floating_widget"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:gravity="center"
+    android:orientation="vertical">
 
-<!--    view com root_container-->
-    <LinearLayout
-        android:id="@+id/root_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="@android:color/transparent"
-        android:gravity="center"
-        android:padding="10dp">
+    <ImageView
+        android:id="@+id/imageViewLogo"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/avva_logo_floating" />
 
-        <ImageView
-            android:id="@+id/refreshButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_launcher_foreground"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/expanded_container"
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/buttonExplain"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@android:color/transparent"
-        android:gravity="center"
-        android:padding="10dp">
+        android:background="@android:color/holo_red_dark"
+        android:padding="10dp"
+        android:text="Explicar meme"
+        android:textColor="@android:color/white" />
 
-        <TextView
-            android:id="@+id/expanded_container_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Hello World!"
-            android:textColor="@android:color/white"
-            android:textSize="16sp"/>
+    <Button
+        android:id="@+id/buttonCheckInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@android:color/holo_blue_dark"
+        android:padding="10dp"
+        android:text="Checar info"
+        android:textColor="@android:color/white" />
 
-    </LinearLayout>
 
 </LinearLayout>
