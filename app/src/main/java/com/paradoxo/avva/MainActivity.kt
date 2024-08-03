@@ -28,6 +28,8 @@ import com.paradoxo.avva.ui.theme.AvvATheme
 import kotlinx.coroutines.launch
 import android.provider.Settings
 import android.speech.RecognizerIntent
+import androidx.compose.foundation.layout.size
+import com.paradoxo.avva.ui.result.ResultActivity
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,10 +90,21 @@ class MainActivity : ComponentActivity() {
                             Text("Open Assistant Settings")
                         }
 
+                        Spacer(modifier = Modifier.size(32.dp))
+
+                        Button(onClick = { openResultActivity() }) {
+                            Text("Result Activity")
+                        }
+
                     }
                 }
             }
         }
+    }
+
+    fun openResultActivity() {
+        val intent = Intent(this, ResultActivity::class.java)
+        startActivity(intent)
     }
 
     fun openActivityAssistant() {

@@ -1,6 +1,7 @@
 package com.paradoxo.avva.ui.launcherService
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.PixelFormat
 import android.os.Build
@@ -43,6 +44,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
@@ -55,6 +57,7 @@ import com.paradoxo.avva.FloatingWindowLifecycleOwner
 import com.paradoxo.avva.R
 import com.paradoxo.avva.gemini.Gemini
 import com.paradoxo.avva.saveBitmapOnInternalStorageApp
+import com.paradoxo.avva.ui.result.ResultActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -113,8 +116,8 @@ class AssistantSessionService(private val context: Context?) : VoiceInteractionS
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.WRAP_CONTENT,
             getLayoutType(),
-//            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-            WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+//            WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
 //            WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
             PixelFormat.TRANSLUCENT
         )
@@ -162,6 +165,7 @@ class AssistantSessionService(private val context: Context?) : VoiceInteractionS
         })
 
         windowManager.addView(floatingView, params)
+//        startHomeActivity()
 
         floatingView.findViewById<Button>(R.id.buttonExplain).setOnClickListener {
             explainScreen()
@@ -169,6 +173,29 @@ class AssistantSessionService(private val context: Context?) : VoiceInteractionS
 
         floatingView.findViewById<Button>(R.id.buttonCheckInfo).setOnClickListener {
             checkInfoScreen()
+        }
+
+        floatingView.findViewById<Button>(R.id.buttonOpenTranparentScreen).setOnClickListener {
+            startHomeActivity()
+        }
+
+    }
+
+    private fun startHomeActivity() {
+        context?.let {
+            val intent = Intent(context, ResultActivity::class.java)
+            intent.addCategory(Intent.CATEGORY_HOME)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            startActivity(context, intent, null)
+        }
+    }
+
+    fun startHomeActivityFuncional() {
+        context?.let {
+            val intent = Intent(Intent.ACTION_MAIN)
+            intent.addCategory(Intent.CATEGORY_HOME)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            startActivity(context, intent, null)
         }
     }
 
