@@ -3,16 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
-
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
-
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-
-    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
@@ -23,30 +20,33 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AvvA"
+        android:theme="@style/Theme.AvvATransparent"
         tools:targetApi="31">
+        <activity
+            android:name=".ui.result.ResultActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.AvvA">
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
 
                 <action android:name="android.intent.action.ASSIST" />
                 <action android:name="android.intent.extra.ASSIST_CONTEXT" />
                 <action android:name="android.intent.action.SEARCH_LONG_PRESS" />
             </intent-filter>
-        </activity>
-
-<!--        assessor services-->
+        </activity> <!-- assessor services -->
         <service android:name=".OverlayService" />
-
-        <service android:name=".ui.accessibilityService.AvvaAccessibilityService"
+        <service
+            android:name=".ui.accessibilityService.AvvaAccessibilityService"
             android:exported="true"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
-            android:label="@string/accessibility_service_label">
+            android:label="@string/accessibility_service_label"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
@@ -54,11 +54,7 @@
             <meta-data
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility_service_config" />
-        </service>
-
-
-
-<!--        launcher services-->
+        </service> <!-- launcher services -->
         <service
             android:name=".ui.launcherService.AvvaVoiceInteractionService"
             android:exported="true"
@@ -71,11 +67,9 @@
                 android:name="android.voice_interaction"
                 android:resource="@xml/assist_metadata" />
         </service>
-
         <service
             android:name=".ui.launcherService.AvvaAssistantSessionService"
             android:permission="android.permission.BIND_VOICE_INTERACTION" />
-
     </application>
 
 </manifest>

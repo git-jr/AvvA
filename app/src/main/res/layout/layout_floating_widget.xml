@@ -35,4 +35,14 @@
         android:textColor="@android:color/white" />
 
 
+    <Button
+        android:id="@+id/buttonOpenTranparentScreen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@color/purple_500"
+        android:padding="10dp"
+        android:text="Abrir tela transparente"
+        android:textColor="@android:color/white" />
+
 </LinearLayout>

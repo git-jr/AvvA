@@ -1,5 +1,6 @@
 package com.paradoxo.avva
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -28,11 +29,16 @@ import com.paradoxo.avva.ui.theme.AvvATheme
 import kotlinx.coroutines.launch
 import android.provider.Settings
 import android.speech.RecognizerIntent
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
+import com.paradoxo.avva.ui.result.ResultActivity
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
 
         val voiceServiceIntent = Intent(this, AvvaVoiceInteractionService::class.java)
         voiceServiceIntent.setAction(Intent.ACTION_ASSIST)
@@ -62,6 +68,7 @@ class MainActivity : ComponentActivity() {
 //            )
 //        }
 
+        enableEdgeToEdge()
         setContent {
             AvvATheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -88,10 +95,21 @@ class MainActivity : ComponentActivity() {
                             Text("Open Assistant Settings")
                         }
 
+                        Spacer(modifier = Modifier.size(32.dp))
+
+                        Button(onClick = { openResultActivity() }) {
+                            Text("Result Activity")
+                        }
+
                     }
                 }
             }
         }
+    }
+
+    fun openResultActivity() {
+        val intent = Intent(this, ResultActivity::class.java)
+        startActivity(intent)
     }
 
     fun openActivityAssistant() {

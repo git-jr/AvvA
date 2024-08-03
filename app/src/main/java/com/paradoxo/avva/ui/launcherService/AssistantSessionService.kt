@@ -1,6 +1,7 @@
 package com.paradoxo.avva.ui.launcherService
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.PixelFormat
 import android.os.Build
@@ -23,26 +24,21 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
@@ -55,6 +51,7 @@ import com.paradoxo.avva.FloatingWindowLifecycleOwner
 import com.paradoxo.avva.R
 import com.paradoxo.avva.gemini.Gemini
 import com.paradoxo.avva.saveBitmapOnInternalStorageApp
+import com.paradoxo.avva.ui.result.ResultActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -95,7 +92,7 @@ class AssistantSessionService(private val context: Context?) : VoiceInteractionS
             apiKey = ""
         )
 
-        floatingOverlay()
+//        floatingOverlay()
     }
 
     private fun floatingOverlay() {
@@ -113,8 +110,8 @@ class AssistantSessionService(private val context: Context?) : VoiceInteractionS
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.WRAP_CONTENT,
             getLayoutType(),
-//            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-            WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+//            WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
 //            WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
             PixelFormat.TRANSLUCENT
         )
@@ -162,6 +159,7 @@ class AssistantSessionService(private val context: Context?) : VoiceInteractionS
         })
 
         windowManager.addView(floatingView, params)
+//        startHomeActivity()
 
         floatingView.findViewById<Button>(R.id.buttonExplain).setOnClickListener {
             explainScreen()
@@ -169,6 +167,29 @@ class AssistantSessionService(private val context: Context?) : VoiceInteractionS
 
         floatingView.findViewById<Button>(R.id.buttonCheckInfo).setOnClickListener {
             checkInfoScreen()
+        }
+
+        floatingView.findViewById<Button>(R.id.buttonOpenTranparentScreen).setOnClickListener {
+//            openResultActivity()
+        }
+
+    }
+
+    private fun openResultActivity() {
+        context?.let {
+            val intent = Intent(context, ResultActivity::class.java)
+            intent.addCategory(Intent.CATEGORY_HOME)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            startActivity(context, intent, null)
+        }
+    }
+
+    fun startHomeActivity() {
+        context?.let {
+            val intent = Intent(Intent.ACTION_MAIN)
+            intent.addCategory(Intent.CATEGORY_HOME)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            startActivity(context, intent, null)
         }
     }
 
@@ -522,6 +543,7 @@ class AssistantSessionService(private val context: Context?) : VoiceInteractionS
         screenshot?.let {
             Log.d("onHandleScreenshot42", "Print disponível")
             saveBitmapOnInternalStorageApp(it)
+            openResultActivity()
         } ?: run {
             Log.d("onHandleScreenshot42", "Náo printou")
         }
