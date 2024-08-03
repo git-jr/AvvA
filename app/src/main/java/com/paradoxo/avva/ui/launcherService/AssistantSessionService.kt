@@ -113,12 +113,14 @@ class AssistantSessionService(private val context: Context?) : VoiceInteractionS
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.WRAP_CONTENT,
             getLayoutType(),
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+//            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+            WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
+//            WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
             PixelFormat.TRANSLUCENT
         )
 
         // Specify the view position
-        params.gravity = Gravity.TOP or Gravity.END
+        //params.gravity = Gravity.TOP or Gravity.END
         params.x = 0
         params.y = 100
 
@@ -188,8 +190,7 @@ class AssistantSessionService(private val context: Context?) : VoiceInteractionS
             val textState = uiState.collectAsState()
             Box(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Transparent),
+                    .background(Color.Red),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
