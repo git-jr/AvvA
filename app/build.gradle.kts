@@ -71,4 +71,5 @@ dependencies {
     implementation(libs.generativeai)
     implementation(libs.coil)
 
+    implementation (libs.compose.markdown)
 }

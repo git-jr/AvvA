@@ -3,7 +3,6 @@ package com.paradoxo.avva.ui.result
 import android.app.Activity
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,6 +10,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -18,7 +19,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -31,7 +31,9 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
@@ -70,7 +72,11 @@ import androidx.core.view.WindowInsetsControllerCompat
 import com.paradoxo.avva.R
 import com.paradoxo.avva.getLastSavedImage
 import com.paradoxo.avva.model.Action
+import com.paradoxo.avva.model.Message
+import com.paradoxo.avva.model.Status
 import com.paradoxo.avva.model.SuggestionAction
+import com.paradoxo.avva.model.markdownContent
+import com.paradoxo.avva.model.sampleMessageList
 import com.paradoxo.avva.ui.components.ChatComponent
 import com.paradoxo.avva.ui.theme.AvvATheme
 import kotlinx.coroutines.delay
@@ -137,11 +143,13 @@ fun MainScreen(imageBitmap: Bitmap) {
 @Composable
 fun EntryScreen(
     defaultResult: String? = null,
+    chatList: List<Message> = remember { mutableStateListOf() },
+    showSmartActions: Boolean = true
 ) {
 
 //    var chatList by remember { mutableStateOf(mutableListOf<String>()) }
-    val chatList = remember { mutableStateListOf("") }
-    defaultResult?.let { chatList.add(it) }
+    val chatListSample: SnapshotStateList<Message> = remember { mutableStateListOf() }
+    chatListSample.addAll(chatList)
 
     var editState by remember { mutableStateOf("") }
     var enableEdit by remember { mutableStateOf(true) }
@@ -154,13 +162,13 @@ fun EntryScreen(
         if (simulateLoading) {
             showLoading = true
             enableEdit = false
-            delay(2000)
-            val randomResult = LoremIpsum(10).values.first()
+            delay(500)
 
-            chatList.add(editState)
-            chatList.add(randomResult)
+            val randomResult = LoremIpsum(100).values.first()
+            chatListSample.add(Message(editState, Status.USER))
+            chatListSample.add(Message(randomResult + markdownContent, Status.AI))
+
             editState = ""
-
             showLoading = false
             enableEdit = true
             simulateLoading = false
@@ -170,31 +178,34 @@ fun EntryScreen(
     Column(
         modifier = Modifier
             .safeDrawingPadding()
-            .fillMaxSize()
-            .padding(16.dp),
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .fillMaxSize(),
         verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Column(
             modifier = Modifier
+                .imePadding()
                 .fillMaxWidth()
-                .sizeIn(minHeight = 200.dp)
-                .background(Color.White, MaterialTheme.shapes.large)
+                .sizeIn(minHeight = 180.dp)
+                .background(Color.White, MaterialTheme.shapes.large),
+            verticalArrangement = Arrangement.SpaceAround
         ) {
-            SmartSuggestionsContainer(listActions)
-            Column(
-                modifier = Modifier
-                    .imePadding(),
-            ) {
-                if (chatList.isNotEmpty()) {
-                    ChatComponent(chatList, Modifier.sizeIn(maxHeight = 300.dp))
+            if (showSmartActions) {
+                SmartSuggestionsContainer(listActions)
+            }
+
+            ChatComponent(chatListSample, Modifier.sizeIn(maxHeight = 300.dp))
+            Column {
+                if (showLoading) {
+                    LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                 }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp)
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     BasicTextField(
                         value = editState,
@@ -202,7 +213,6 @@ fun EntryScreen(
                         singleLine = false,
                         maxLines = 3,
                         interactionSource = interactionSource,
-                        modifier = Modifier.fillMaxWidth(),
                         textStyle = MaterialTheme.typography.displaySmall.copy(fontSize = 22.sp),
                         decorationBox = @Composable { innerTextField ->
                             TextFieldDefaults.DecorationBox(
@@ -227,32 +237,21 @@ fun EntryScreen(
                                     disabledContainerColor = Color.Transparent,
                                     disabledIndicatorColor = Color.Transparent,
                                 ),
-                                contentPadding = OutlinedTextFieldDefaults.contentPadding(),
+//                                contentPadding = OutlinedTextFieldDefaults.contentPadding(),
                             )
                         }
                     )
-                }
-                if (showLoading) {
-                    LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-                }
 
-
-            }
-            Column(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.End
-            ) {
-                OutlinedButton(
-                    onClick = {
-                        simulateLoading = true
-                    },
-                ) {
-                    Text(
-                        text = "Enviar",
-                        modifier = Modifier.padding(4.dp),
-                        color = Color.DarkGray
+                    Icon(
+                        Icons.AutoMirrored.Filled.Send,
+                        contentDescription = "Enviar",
+                        tint = Color.Gray,
+                        modifier = Modifier
+                            .padding(horizontal = 8.dp)
+                            .size(24.dp)
+                            .clickable {
+                                simulateLoading = true
+                            }
                     )
                 }
             }
@@ -314,7 +313,7 @@ fun MainScreenPreview() {
     AvvATheme {
         MainScreen(Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888))
         EntryScreen(
-            defaultResult = "Resultado de teste"
+            chatList = sampleMessageList
         )
     }
 }
