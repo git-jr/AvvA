@@ -3,6 +3,7 @@ package com.paradoxo.avva
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Environment
+import android.util.Log
 import java.io.File
 import java.io.FileOutputStream
 
@@ -13,7 +14,7 @@ fun saveBitmapOnInternalStorageApp(bitmap: Bitmap) {
     )
     directory.mkdirs()
 
-    val fileName = "imagem ${System.currentTimeMillis()}.png"
+    val fileName = "imagem${System.currentTimeMillis()}.png"
     val file = File(directory, fileName)
 
     try {
@@ -28,19 +29,26 @@ fun saveBitmapOnInternalStorageApp(bitmap: Bitmap) {
 
 
 fun getLastSavedImage(): Bitmap? {
-    val directory = File(
-        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-        "AvvA"
-    )
-    val allFilesInFolder =
-        directory.listFiles { _, name -> name.startsWith("imagem") && name.endsWith(".png") }
+    try {
+        val directory = File(
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+            "AvvA"
+        )
+        Log.i("getLastSavedImage", "directory: $directory")
+        val allFilesInFolder = directory.listFiles { _, name -> name.startsWith("imagem") && name.endsWith(".png") }
 
-    if (allFilesInFolder != null && allFilesInFolder.isNotEmpty()) {
-        allFilesInFolder.sortByDescending { it.name }
+        Log.i("getLastSavedImage", "allFilesInFolder: $allFilesInFolder")
 
-        val latestFile = allFilesInFolder[0]
-        return BitmapFactory.decodeFile(latestFile.absolutePath)
+        if (allFilesInFolder != null && allFilesInFolder.isNotEmpty()) {
+            allFilesInFolder.sortByDescending { it.name }
+            Log.i("getLastSavedImage", "latestFile: ${allFilesInFolder[0]}")
+
+            val latestFile = allFilesInFolder[0]
+            return BitmapFactory.decodeFile(latestFile.absolutePath)
+        }
+    } catch (e: Exception) {
+        e.printStackTrace()
+        return null
     }
-
     return null
 }
