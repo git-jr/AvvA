@@ -45,6 +45,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -69,6 +70,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.paradoxo.avva.R
 import com.paradoxo.avva.getLastSavedImage
 import com.paradoxo.avva.model.Action
@@ -79,8 +81,10 @@ import com.paradoxo.avva.model.markdownContent
 import com.paradoxo.avva.model.sampleMessageList
 import com.paradoxo.avva.ui.components.ChatComponent
 import com.paradoxo.avva.ui.theme.AvvATheme
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 
+@AndroidEntryPoint
 class ResultActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -146,6 +150,9 @@ fun EntryScreen(
     chatList: List<Message> = remember { mutableStateListOf() },
     showSmartActions: Boolean = true
 ) {
+    val viewModel = hiltViewModel<ResultViewModel>()
+    val state by viewModel.uiState.collectAsState()
+
 
 //    var chatList by remember { mutableStateOf(mutableListOf<String>()) }
     val chatListSample: SnapshotStateList<Message> = remember { mutableStateListOf() }
@@ -251,6 +258,7 @@ fun EntryScreen(
                             .size(24.dp)
                             .clickable {
                                 simulateLoading = true
+                                viewModel.getResponse(editState)
                             }
                     )
                 }
