@@ -47,6 +47,9 @@ class MainActivity : ComponentActivity() {
             startService(voiceServiceIntent)
         }, 1000)
 
+
+        startActivity(Intent(this, ResultActivity::class.java))
+
 //        val intent = Intent(this, OverlayService::class.java)
 //        startService(intent)
 //

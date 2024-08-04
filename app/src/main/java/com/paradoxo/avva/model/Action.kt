@@ -9,5 +9,6 @@ data class Action(
 enum class SuggestionAction {
     SMART_REPLY,
     EXPLAIN,
-   CHECK_INFO,
+    CHECK_INFO,
+    TRANSLATE,
 }

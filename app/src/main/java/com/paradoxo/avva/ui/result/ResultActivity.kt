@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -30,8 +31,10 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -39,10 +42,13 @@ import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -55,7 +61,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.Wallpapers
+import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -63,14 +71,16 @@ import com.paradoxo.avva.R
 import com.paradoxo.avva.getLastSavedImage
 import com.paradoxo.avva.model.Action
 import com.paradoxo.avva.model.SuggestionAction
+import com.paradoxo.avva.ui.components.ChatComponent
 import com.paradoxo.avva.ui.theme.AvvATheme
+import kotlinx.coroutines.delay
 
 class ResultActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-            setContent {
+        setContent {
             Box(
                 modifier = Modifier
                     .fillMaxSize(),
@@ -125,9 +135,37 @@ fun MainScreen(imageBitmap: Bitmap) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EntryScreen() {
-    var editState by remember { mutableStateOf("") }
+fun EntryScreen(
+    defaultResult: String? = null,
+) {
 
+//    var chatList by remember { mutableStateOf(mutableListOf<String>()) }
+    val chatList = remember { mutableStateListOf("") }
+    defaultResult?.let { chatList.add(it) }
+
+    var editState by remember { mutableStateOf("") }
+    var enableEdit by remember { mutableStateOf(true) }
+    val interactionSource = remember { MutableInteractionSource() }
+    var showLoading by remember { mutableStateOf(false) }
+
+
+    var simulateLoading by remember { mutableStateOf(false) }
+    LaunchedEffect(simulateLoading) {
+        if (simulateLoading) {
+            showLoading = true
+            enableEdit = false
+            delay(2000)
+            val randomResult = LoremIpsum(10).values.first()
+
+            chatList.add(editState)
+            chatList.add(randomResult)
+            editState = ""
+
+            showLoading = false
+            enableEdit = true
+            simulateLoading = false
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -140,50 +178,63 @@ fun EntryScreen() {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .sizeIn(minHeight = 200.dp, maxHeight = 250.dp)
-                .background(Color.White, MaterialTheme.shapes.medium)
+                .sizeIn(minHeight = 200.dp)
+                .background(Color.White, MaterialTheme.shapes.large)
         ) {
             SmartSuggestionsContainer(listActions)
             Column(
                 modifier = Modifier
                     .imePadding(),
             ) {
-                Text(
-                    text = "Resultado",
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                )
+                if (chatList.isNotEmpty()) {
+                    ChatComponent(chatList, Modifier.sizeIn(maxHeight = 300.dp))
+                }
+
                 Spacer(modifier = Modifier.height(8.dp))
 
-                var enabled by remember { mutableStateOf(true) }
-                val interactionSource = remember { MutableInteractionSource() }
-
-                BasicTextField(
-                    value = editState,
-                    onValueChange = { editState = it },
-                    singleLine = true,
-                    interactionSource = interactionSource,
+                Row(
                     modifier = Modifier.fillMaxWidth(),
-                    decorationBox = @Composable { innerTextField ->
-                        TextFieldDefaults.TextFieldDecorationBox(
-                            value = editState,
-                            innerTextField = innerTextField,
-                            enabled = enabled,
-                            singleLine = true,
-                            visualTransformation = VisualTransformation.None,
-                            interactionSource = interactionSource,
-                            placeholder = { Text("O que você deseja fazer?") },
-                            colors = TextFieldDefaults.colors().copy(
-                                unfocusedContainerColor = Color.Transparent,
-                                focusedContainerColor = Color.Transparent,
-                                cursorColor = Color.Black,
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent,
-                            ),
-                            contentPadding = OutlinedTextFieldDefaults.contentPadding()
-
-                        )
-                    }
-                )
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    BasicTextField(
+                        value = editState,
+                        onValueChange = { editState = it },
+                        singleLine = false,
+                        maxLines = 3,
+                        interactionSource = interactionSource,
+                        modifier = Modifier.fillMaxWidth(),
+                        textStyle = MaterialTheme.typography.displaySmall.copy(fontSize = 22.sp),
+                        decorationBox = @Composable { innerTextField ->
+                            TextFieldDefaults.DecorationBox(
+                                value = editState,
+                                innerTextField = innerTextField,
+                                enabled = enableEdit,
+                                singleLine = false,
+                                visualTransformation = VisualTransformation.None,
+                                interactionSource = interactionSource,
+                                placeholder = {
+                                    Text(
+                                        "O que você deseja fazer?",
+                                        style = MaterialTheme.typography.displaySmall.copy(fontSize = 24.sp)
+                                    )
+                                },
+                                colors = TextFieldDefaults.colors().copy(
+                                    unfocusedContainerColor = Color.Transparent,
+                                    focusedContainerColor = Color.Transparent,
+                                    cursorColor = Color.Black,
+                                    focusedIndicatorColor = Color.Transparent,
+                                    unfocusedIndicatorColor = Color.Transparent,
+                                    disabledContainerColor = Color.Transparent,
+                                    disabledIndicatorColor = Color.Transparent,
+                                ),
+                                contentPadding = OutlinedTextFieldDefaults.contentPadding(),
+                            )
+                        }
+                    )
+                }
+                if (showLoading) {
+                    LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                }
 
 
             }
@@ -194,11 +245,14 @@ fun EntryScreen() {
                 horizontalAlignment = Alignment.End
             ) {
                 OutlinedButton(
-                    onClick = { },
+                    onClick = {
+                        simulateLoading = true
+                    },
                 ) {
                     Text(
                         text = "Enviar",
                         modifier = Modifier.padding(4.dp),
+                        color = Color.DarkGray
                     )
                 }
             }
@@ -259,13 +313,16 @@ private fun SmartSuggestionsContainer(
 fun MainScreenPreview() {
     AvvATheme {
         MainScreen(Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888))
-        EntryScreen()
+        EntryScreen(
+            defaultResult = "Resultado de teste"
+        )
     }
 }
 
 
 val listActions = listOf(
-    Action("Explique a tela", SuggestionAction.EXPLAIN, R.drawable.ic_launcher_background),
-    Action("Verificar informação", SuggestionAction.CHECK_INFO, R.drawable.ic_launcher_background),
-    Action("Outra ação", SuggestionAction.SMART_REPLY, R.drawable.ic_launcher_background),
+    Action("Explique a tela", SuggestionAction.EXPLAIN, R.drawable.ic_explain_screen),
+    Action("Verificar informação", SuggestionAction.CHECK_INFO, R.drawable.ic_check_info),
+    Action("Traduzir", SuggestionAction.TRANSLATE, R.drawable.ic_translate),
+    Action("Outra ação", SuggestionAction.SMART_REPLY, R.drawable.ic_actions),
 )
