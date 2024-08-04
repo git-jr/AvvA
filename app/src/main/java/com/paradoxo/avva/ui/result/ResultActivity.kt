@@ -10,8 +10,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -33,13 +31,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -47,11 +42,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -64,7 +57,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.Wallpapers
-import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
@@ -74,10 +66,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.paradoxo.avva.R
 import com.paradoxo.avva.getLastSavedImage
 import com.paradoxo.avva.model.Action
-import com.paradoxo.avva.model.Message
-import com.paradoxo.avva.model.Status
 import com.paradoxo.avva.model.SuggestionAction
-import com.paradoxo.avva.model.markdownContent
 import com.paradoxo.avva.model.sampleMessageList
 import com.paradoxo.avva.ui.components.ChatComponent
 import com.paradoxo.avva.ui.theme.AvvATheme
@@ -96,9 +85,21 @@ class ResultActivity : ComponentActivity() {
                     .fillMaxSize(),
                 contentAlignment = Alignment.BottomCenter
             ) {
+                val viewModel = hiltViewModel<ResultViewModel>()
+                val state: ResultUiState by viewModel.uiState.collectAsState()
+
                 getLastSavedImage()?.let { imageBitmap ->
                     MainScreen(imageBitmap)
-                    EntryScreen()
+                    EntryScreen(
+                        state = state,
+                        onSend = { prompt ->
+                            if (state.usePrintScreen) {
+                                viewModel.getResponse(prompt, imageBitmap)
+                            } else {
+                                viewModel.getResponse(prompt)
+                            }
+                        }
+                    )
                 } ?: run {
                     Box(
                         modifier = Modifier
@@ -146,39 +147,26 @@ fun MainScreen(imageBitmap: Bitmap) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EntryScreen(
-    defaultResult: String? = null,
-    chatList: List<Message> = remember { mutableStateListOf() },
+    state: ResultUiState,
+    onSend: (String) -> Unit = {},
     showSmartActions: Boolean = true
 ) {
-    val viewModel = hiltViewModel<ResultViewModel>()
-    val state by viewModel.uiState.collectAsState()
-
-
-//    var chatList by remember { mutableStateOf(mutableListOf<String>()) }
-    val chatListSample: SnapshotStateList<Message> = remember { mutableStateListOf() }
-    chatListSample.addAll(chatList)
-
     var editState by remember { mutableStateOf("") }
     var enableEdit by remember { mutableStateOf(true) }
     val interactionSource = remember { MutableInteractionSource() }
     var showLoading by remember { mutableStateOf(false) }
 
 
-    var simulateLoading by remember { mutableStateOf(false) }
-    LaunchedEffect(simulateLoading) {
-        if (simulateLoading) {
+    LaunchedEffect(state.loadingResponse) {
+        if (state.loadingResponse) {
             showLoading = true
             enableEdit = false
             delay(500)
 
-            val randomResult = LoremIpsum(100).values.first()
-            chatListSample.add(Message(editState, Status.USER))
-            chatListSample.add(Message(randomResult + markdownContent, Status.AI))
-
+        } else {
             editState = ""
             showLoading = false
             enableEdit = true
-            simulateLoading = false
         }
     }
 
@@ -202,7 +190,7 @@ fun EntryScreen(
                 SmartSuggestionsContainer(listActions)
             }
 
-            ChatComponent(chatListSample, Modifier.sizeIn(maxHeight = 300.dp))
+            ChatComponent(state.chatList, Modifier.sizeIn(maxHeight = 300.dp))
             Column {
                 if (showLoading) {
                     LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
@@ -257,8 +245,7 @@ fun EntryScreen(
                             .padding(horizontal = 8.dp)
                             .size(24.dp)
                             .clickable {
-                                simulateLoading = true
-                                viewModel.getResponse(editState)
+                                onSend(editState)
                             }
                     )
                 }
@@ -321,7 +308,9 @@ fun MainScreenPreview() {
     AvvATheme {
         MainScreen(Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888))
         EntryScreen(
-            chatList = sampleMessageList
+            state = ResultUiState(
+                chatList = sampleMessageList
+            )
         )
     }
 }

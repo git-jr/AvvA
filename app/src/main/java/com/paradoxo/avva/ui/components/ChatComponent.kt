@@ -30,7 +30,7 @@ import dev.jeziellago.compose.markdowntext.MarkdownText
 
 @Composable
 fun ChatComponent(
-    chatList: SnapshotStateList<Message>,
+    chatList: List<Message>,
     modifier: Modifier = Modifier
 ) {
 
