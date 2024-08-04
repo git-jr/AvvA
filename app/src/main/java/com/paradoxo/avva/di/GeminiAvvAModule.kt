@@ -12,6 +12,6 @@ import dagger.hilt.components.SingletonComponent
 class GeminiAvvAModule {
     @Provides
     fun provideGeminiAvvA(): GeminiAvvA {
-        return GeminiAvvA("")
+        return GeminiAvvA(com.paradoxo.avva.BuildConfig.apiKey)
     }
 }
