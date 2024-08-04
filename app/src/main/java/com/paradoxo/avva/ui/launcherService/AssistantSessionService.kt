@@ -178,9 +178,9 @@ class AssistantSessionService(private val context: Context?) : VoiceInteractionS
     private fun openResultActivity() {
         context?.let {
             val intent = Intent(context, ResultActivity::class.java)
-            intent.addCategory(Intent.CATEGORY_HOME)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             startActivity(context, intent, null)
+            finish()
         }
     }
 
@@ -552,7 +552,7 @@ class AssistantSessionService(private val context: Context?) : VoiceInteractionS
 
     override fun onDestroy() {
         super.onDestroy()
-        windowManager.removeViewImmediate(floatingView)
+//        windowManager.removeViewImmediate(floatingView)
         job.cancel()
     }
 
