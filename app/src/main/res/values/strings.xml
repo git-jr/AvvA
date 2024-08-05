@@ -2,4 +2,18 @@
     <string name="app_name">AvvA</string>
     <string name="accessibility_service_label">AvvA Accessibility Service</string>
     <string name="accessibility_service_description">Accessibility Service for AvvA</string>
+    <string name="screen_content">Use screen content.</string>
+    <string name="what_to_do">What do you want to do?</string>
+
+    <string name="explain_screen">Explain screen</string>
+    <string name="check_information">Check information</string>
+    <string name="translate">Translate</string>
+    <string name="other_action">Other action</string>
+    <string name="explain_screen_command">Explain the content of this screen.</string>
+    <string name="check_information_command">Is the information on this screen correct?</string>
+    <string name="translate_command">Translate the content of this screen.</string>
+    <string name="other_action_command">Other action</string>
+
+    <string name="no_image_yet">No image available yet.</string>
+
 </resources>

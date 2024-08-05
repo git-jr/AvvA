@@ -60,6 +60,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -70,7 +71,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.paradoxo.avva.R
 import com.paradoxo.avva.model.Action
-import com.paradoxo.avva.model.SuggestionAction
+import com.paradoxo.avva.model.ActionType
+import com.paradoxo.avva.model.listActions
 import com.paradoxo.avva.model.sampleMessageList
 import com.paradoxo.avva.ui.components.ChatComponent
 import com.paradoxo.avva.ui.theme.AvvATheme
@@ -99,8 +101,8 @@ class ResultActivity : ComponentActivity() {
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "Falha ao carregar imagem\nTente novamente?",
-                            textAlign = TextAlign.Center,
+                            text = stringResource(R.string.no_image_yet),
+                                    textAlign = TextAlign.Center,
                             modifier = Modifier
                                 .clickable { recreate() }
                                 .background(Color.White)
@@ -129,9 +131,7 @@ class ResultActivity : ComponentActivity() {
                     EntryScreen(
                         state = state,
                         onToggleUsePrintScreen = { viewModel.toggleUsePrintScreen() },
-                        onSend = { prompt ->
-                            viewModel.getResponse(prompt)
-                        }
+                        onSend = { prompt -> viewModel.getResponse(prompt) },
                     )
                 }
             }
@@ -168,7 +168,7 @@ fun PrintScreen(imageBitmap: Bitmap) {
 fun EntryScreen(
     state: ResultUiState,
     onSend: (String) -> Unit = {},
-    onToggleUsePrintScreen: () -> Unit = {}
+    onToggleUsePrintScreen: () -> Unit = {},
 ) {
     var editState by remember { mutableStateOf("") }
     var enableEdit by remember { mutableStateOf(true) }
@@ -227,7 +227,9 @@ fun EntryScreen(
                         ),
                         exit = slideOutVertically() + shrinkVertically() + fadeOut()
                     ) {
-                        SmartSuggestionsContainer(listActions)
+                        SmartSuggestionsContainer(listActions) {
+                            onSend(it)
+                        }
                     }
 
 
@@ -239,7 +241,7 @@ fun EntryScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            "Usar conteúdo da tela",
+                            stringResource(R.string.screen_content),
                             style = MaterialTheme.typography.bodySmall.copy(fontSize = 16.sp)
                         )
                         Switch(
@@ -279,7 +281,7 @@ fun EntryScreen(
                                     interactionSource = interactionSource,
                                     placeholder = {
                                         Text(
-                                            "O que você deseja fazer?",
+                                            stringResource(R.string.what_to_do),
                                             style = MaterialTheme.typography.displaySmall.copy(
                                                 fontSize = 24.sp
                                             )
@@ -320,7 +322,8 @@ fun EntryScreen(
 
 @Composable
 private fun SmartSuggestionsContainer(
-    listActions: List<Action>
+    listActions: List<Action>,
+    onActionClick: (String) -> Unit
 ) {
     val context = LocalView.current.context
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -331,14 +334,17 @@ private fun SmartSuggestionsContainer(
                 .padding(horizontal = 8.dp)
         ) {
             listActions.forEach { action ->
+                val actionText = stringResource(id = action.text)
+                val commandText = stringResource(id = action.command)
                 SuggestionChip(
                     modifier = Modifier.padding(horizontal = 4.dp),
                     onClick = {
-                        Toast.makeText(context, action.text, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, actionText, Toast.LENGTH_SHORT).show()
+                        onActionClick(commandText)
                     },
                     label = {
                         Text(
-                            action.text,
+                            actionText,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.widthIn(max = 100.dp)
@@ -349,7 +355,7 @@ private fun SmartSuggestionsContainer(
                         action.icon?.let {
                             Icon(
                                 painter = painterResource(id = action.icon),
-                                contentDescription = action.text,
+                                contentDescription = actionText,
                                 tint = Color.Gray,
                                 modifier = Modifier.size(18.dp)
                             )
@@ -377,11 +383,3 @@ fun MainScreenPreview() {
         )
     }
 }
-
-
-val listActions = listOf(
-    Action("Explique a tela", SuggestionAction.EXPLAIN, R.drawable.ic_explain_screen),
-    Action("Verificar informação", SuggestionAction.CHECK_INFO, R.drawable.ic_check_info),
-    Action("Traduzir", SuggestionAction.TRANSLATE, R.drawable.ic_translate),
-    Action("Outra ação", SuggestionAction.SMART_REPLY, R.drawable.ic_actions),
-)
