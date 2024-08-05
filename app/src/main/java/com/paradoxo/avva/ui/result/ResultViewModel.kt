@@ -1,10 +1,10 @@
 package com.paradoxo.avva.ui.result
 
-import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.paradoxo.avva.gemini.GeminiAvvA
+import com.paradoxo.avva.getLastSavedImage
 import com.paradoxo.avva.model.Message
 import com.paradoxo.avva.model.Status
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,14 +24,26 @@ class ResultViewModel @Inject constructor(
 
     var uiState = _uiState.asStateFlow()
 
-    fun getResponse(prompt: String, printScreen: Bitmap? = null) {
+    init {
+        loadPrintScreen()
+    }
+
+    private fun loadPrintScreen() {
+        viewModelScope.launch {
+            getLastSavedImage().let {
+                _uiState.value = _uiState.value.copy(printScreen = it)
+            }
+        }
+    }
+
+    fun getResponse(prompt: String) {
         addMessage(Message(prompt, Status.USER))
         _uiState.value = _uiState.value.copy(loadingResponse = true)
 
         viewModelScope.launch {
             gemini.requestResponse(
                 prompt = prompt,
-                image = printScreen,
+                image = if (_uiState.value.usePrintScreen) _uiState.value.printScreen else null,
                 onSuccessful = { response ->
                     Log.d("ResultViewModelResponse", "Response: $response")
                     addMessage(Message(response, Status.AI))
@@ -50,6 +62,10 @@ class ResultViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(
             chatList = _uiState.value.chatList + message
         )
+    }
+
+    fun toggleUsePrintScreen() {
+        _uiState.value = _uiState.value.copy(usePrintScreen = !_uiState.value.usePrintScreen)
     }
 }
 

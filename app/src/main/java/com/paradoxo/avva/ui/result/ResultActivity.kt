@@ -1,12 +1,19 @@
 package com.paradoxo.avva.ui.result
 
-import android.app.Activity
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -36,6 +43,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SuggestionChip
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -59,12 +67,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.Wallpapers
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.paradoxo.avva.R
-import com.paradoxo.avva.getLastSavedImage
 import com.paradoxo.avva.model.Action
 import com.paradoxo.avva.model.SuggestionAction
 import com.paradoxo.avva.model.sampleMessageList
@@ -88,19 +92,7 @@ class ResultActivity : ComponentActivity() {
                 val viewModel = hiltViewModel<ResultViewModel>()
                 val state: ResultUiState by viewModel.uiState.collectAsState()
 
-                getLastSavedImage()?.let { imageBitmap ->
-                    MainScreen(imageBitmap)
-                    EntryScreen(
-                        state = state,
-                        onSend = { prompt ->
-                            if (state.usePrintScreen) {
-                                viewModel.getResponse(prompt, imageBitmap)
-                            } else {
-                                viewModel.getResponse(prompt)
-                            }
-                        }
-                    )
-                } ?: run {
+                if (state.printScreen == null) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize(),
@@ -116,32 +108,59 @@ class ResultActivity : ComponentActivity() {
                         )
                     }
                 }
+
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Crossfade(
+                        targetState = state.usePrintScreen,
+                        label = "show print screen"
+                    ) { showImage ->
+                        if (showImage) {
+                            state.printScreen?.let { imageBitmap ->
+                                PrintScreen(imageBitmap)
+                            }
+                        } else {
+                            BackgroundScreen()
+                        }
+                    }
+
+                    EntryScreen(
+                        state = state,
+                        onToggleUsePrintScreen = { viewModel.toggleUsePrintScreen() },
+                        onSend = { prompt ->
+                            viewModel.getResponse(prompt)
+                        }
+                    )
+                }
             }
         }
     }
-
-    @Composable
-    private fun WindowInsetsSetup() {
-        val windowInsetsController: WindowInsetsControllerCompat
-        val view = LocalView.current
-        val window = (view.context as Activity).window
-        windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
-        windowInsetsController.hide(WindowInsetsCompat.Type.navigationBars())
-//        windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
-//        windowInsetsController.hide(WindowInsetsCompat.Type.statusBars())
-
-    }
 }
 
+
 @Composable
-fun MainScreen(imageBitmap: Bitmap) {
-    Image(
+fun PrintScreen(imageBitmap: Bitmap) {
+    Box(
         modifier = Modifier.fillMaxSize(),
-        bitmap = imageBitmap
-            .asImageBitmap(),
-        contentDescription = "Imagem salva",
-        contentScale = ContentScale.Crop
-    )
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            modifier = Modifier.fillMaxSize(),
+            bitmap = imageBitmap
+                .asImageBitmap(),
+            contentDescription = "Imagem salva",
+            contentScale = ContentScale.Crop
+        )
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.5f))
+        )
+    }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -149,20 +168,17 @@ fun MainScreen(imageBitmap: Bitmap) {
 fun EntryScreen(
     state: ResultUiState,
     onSend: (String) -> Unit = {},
-    showSmartActions: Boolean = true
+    onToggleUsePrintScreen: () -> Unit = {}
 ) {
     var editState by remember { mutableStateOf("") }
     var enableEdit by remember { mutableStateOf(true) }
     val interactionSource = remember { MutableInteractionSource() }
     var showLoading by remember { mutableStateOf(false) }
 
-
     LaunchedEffect(state.loadingResponse) {
         if (state.loadingResponse) {
             showLoading = true
             enableEdit = false
-            delay(500)
-
         } else {
             editState = ""
             showLoading = false
@@ -170,87 +186,134 @@ fun EntryScreen(
         }
     }
 
-    Column(
-        modifier = Modifier
-            .safeDrawingPadding()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.Bottom,
-        horizontalAlignment = Alignment.CenterHorizontally
+    var showContent by remember { mutableStateOf(false) }
+    LaunchedEffect(showContent) {
+        delay(10)
+        showContent = true
+    }
+
+    AnimatedVisibility(
+        visible = showContent,
+        enter = expandVertically(
+            expandFrom = Alignment.Top
+        ) + fadeIn(
+            initialAlpha = 0.3f
+        )
     ) {
         Column(
             modifier = Modifier
-                .imePadding()
-                .fillMaxWidth()
-                .sizeIn(minHeight = 180.dp)
-                .background(Color.White, MaterialTheme.shapes.large),
-            verticalArrangement = Arrangement.SpaceAround
+                .safeDrawingPadding()
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.Bottom,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (showSmartActions) {
-                SmartSuggestionsContainer(listActions)
-            }
+            Column(
+                modifier = Modifier
+                    .imePadding()
+                    .fillMaxWidth()
+                    .sizeIn(minHeight = 180.dp)
+                    .animateContentSize()
+                    .background(Color.White, MaterialTheme.shapes.large),
+                verticalArrangement = Arrangement.SpaceAround
+            ) {
+                Column {
+                    AnimatedVisibility(
+                        visible = state.usePrintScreen,
+                        enter = expandVertically(
+                            expandFrom = Alignment.Top
+                        ) + fadeIn(
+                            initialAlpha = 0.3f
+                        ),
+                        exit = slideOutVertically() + shrinkVertically() + fadeOut()
+                    ) {
+                        SmartSuggestionsContainer(listActions)
+                    }
 
-            ChatComponent(state.chatList, Modifier.sizeIn(maxHeight = 300.dp))
-            Column {
-                if (showLoading) {
-                    LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+
+                    Row(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            "Usar conteúdo da tela",
+                            style = MaterialTheme.typography.bodySmall.copy(fontSize = 16.sp)
+                        )
+                        Switch(
+                            checked = state.usePrintScreen,
+                            onCheckedChange = { onToggleUsePrintScreen() },
+                        )
+                    }
                 }
-                Row(
-                    modifier = Modifier
-                        .padding(horizontal = 8.dp)
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    BasicTextField(
-                        value = editState,
-                        onValueChange = { editState = it },
-                        singleLine = false,
-                        maxLines = 3,
-                        interactionSource = interactionSource,
-                        textStyle = MaterialTheme.typography.displaySmall.copy(fontSize = 22.sp),
-                        decorationBox = @Composable { innerTextField ->
-                            TextFieldDefaults.DecorationBox(
-                                value = editState,
-                                innerTextField = innerTextField,
-                                enabled = enableEdit,
-                                singleLine = false,
-                                visualTransformation = VisualTransformation.None,
-                                interactionSource = interactionSource,
-                                placeholder = {
-                                    Text(
-                                        "O que você deseja fazer?",
-                                        style = MaterialTheme.typography.displaySmall.copy(fontSize = 24.sp)
-                                    )
-                                },
-                                colors = TextFieldDefaults.colors().copy(
-                                    unfocusedContainerColor = Color.Transparent,
-                                    focusedContainerColor = Color.Transparent,
-                                    cursorColor = Color.Black,
-                                    focusedIndicatorColor = Color.Transparent,
-                                    unfocusedIndicatorColor = Color.Transparent,
-                                    disabledContainerColor = Color.Transparent,
-                                    disabledIndicatorColor = Color.Transparent,
-                                ),
-//                                contentPadding = OutlinedTextFieldDefaults.contentPadding(),
-                            )
-                        }
-                    )
 
-                    Icon(
-                        Icons.AutoMirrored.Filled.Send,
-                        contentDescription = "Enviar",
-                        tint = Color.Gray,
+                ChatComponent(state.chatList, Modifier.sizeIn(maxHeight = 300.dp))
+
+                Column {
+                    if (showLoading) {
+                        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                    }
+                    Row(
                         modifier = Modifier
                             .padding(horizontal = 8.dp)
-                            .size(24.dp)
-                            .clickable {
-                                onSend(editState)
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        BasicTextField(
+                            value = editState,
+                            onValueChange = { editState = it },
+                            singleLine = false,
+                            maxLines = 3,
+                            interactionSource = interactionSource,
+                            textStyle = MaterialTheme.typography.displaySmall.copy(fontSize = 22.sp),
+                            decorationBox = @Composable { innerTextField ->
+                                TextFieldDefaults.DecorationBox(
+                                    value = editState,
+                                    innerTextField = innerTextField,
+                                    enabled = enableEdit,
+                                    singleLine = false,
+                                    visualTransformation = VisualTransformation.None,
+                                    interactionSource = interactionSource,
+                                    placeholder = {
+                                        Text(
+                                            "O que você deseja fazer?",
+                                            style = MaterialTheme.typography.displaySmall.copy(
+                                                fontSize = 24.sp
+                                            )
+                                        )
+                                    },
+                                    colors = TextFieldDefaults.colors().copy(
+                                        unfocusedContainerColor = Color.Transparent,
+                                        focusedContainerColor = Color.Transparent,
+                                        cursorColor = Color.Black,
+                                        focusedIndicatorColor = Color.Transparent,
+                                        unfocusedIndicatorColor = Color.Transparent,
+                                        disabledContainerColor = Color.Transparent,
+                                        disabledIndicatorColor = Color.Transparent,
+                                    ),
+//                                contentPadding = OutlinedTextFieldDefaults.contentPadding(),
+                                )
                             }
-                    )
-                }
-            }
+                        )
 
+                        Icon(
+                            Icons.AutoMirrored.Filled.Send,
+                            contentDescription = "Enviar",
+                            tint = Color.Gray,
+                            modifier = Modifier
+                                .padding(horizontal = 8.dp)
+                                .size(24.dp)
+                                .clickable {
+                                    onSend(editState)
+                                }
+                        )
+                    }
+                }
+
+            }
         }
     }
 }
@@ -306,7 +369,7 @@ private fun SmartSuggestionsContainer(
 @Composable
 fun MainScreenPreview() {
     AvvATheme {
-        MainScreen(Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888))
+        PrintScreen(Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888))
         EntryScreen(
             state = ResultUiState(
                 chatList = sampleMessageList
