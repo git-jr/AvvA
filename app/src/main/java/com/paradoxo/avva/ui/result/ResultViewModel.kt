@@ -27,7 +27,7 @@ class ResultViewModel @Inject constructor(
     var uiState = _uiState.asStateFlow()
 
     init {
-//        loadPrintScreen()
+        loadPrintScreen()
     }
 
     fun loadPrintScreen() {

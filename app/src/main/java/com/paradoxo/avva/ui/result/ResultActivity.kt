@@ -42,7 +42,6 @@ class ResultActivity : ComponentActivity() {
                 contentAlignment = Alignment.BottomCenter
             ) {
                 val viewModel = hiltViewModel<ResultViewModel>()
-                viewModel.loadPrintScreen()
                 val state: ResultUiState by viewModel.uiState.collectAsState()
 
                 if (state.printScreen == null) {
