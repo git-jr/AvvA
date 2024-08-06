@@ -85,3 +85,8 @@ dependencies {
     implementation(libs.coil)
     implementation(libs.compose.markdown)
 }
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}

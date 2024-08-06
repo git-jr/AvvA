@@ -1,14 +1,14 @@
 package com.paradoxo.avva.ui.result
 
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.paradoxo.avva.gemini.GeminiAvvA
 import com.paradoxo.avva.model.Message
 import com.paradoxo.avva.model.Status
-import com.paradoxo.avva.util.getLastSavedImage
+import com.paradoxo.avva.util.BitmapUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -16,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ResultViewModel @Inject constructor(
-    private val gemini: GeminiAvvA
+    private val gemini: GeminiAvvA,
+    private val bitmapUtil: BitmapUtil
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
@@ -29,17 +30,17 @@ class ResultViewModel @Inject constructor(
 //        loadPrintScreen()
     }
 
-    fun loadPrintScreen(context: Context) {
+    fun loadPrintScreen() {
         viewModelScope.launch {
-            getLastSavedImage(context = context).let {
+            bitmapUtil.getLastSavedImage().let {
                 _uiState.value = _uiState.value.copy(printScreen = it)
             }
         }
     }
 
     fun getResponse(prompt: String) {
-        addMessage(Message(prompt, Status.USER))
         _uiState.value = _uiState.value.copy(loadingResponse = true)
+        addMessage(Message(prompt, Status.USER))
 
         viewModelScope.launch {
             gemini.requestResponse(

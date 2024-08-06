@@ -33,12 +33,12 @@ fun ChatComponent(
     chatList: List<Message>,
     modifier: Modifier = Modifier
 ) {
-
     Spacer(modifier = Modifier.height(8.dp))
     LazyColumn(
         modifier = modifier.fillMaxWidth(),
+        reverseLayout = true
     ) {
-        items(chatList) { message ->
+        items(chatList.reversed()) { message ->
             val isUser = Status.USER == message.status
             val isAI = Status.AI == message.status
             Row(
