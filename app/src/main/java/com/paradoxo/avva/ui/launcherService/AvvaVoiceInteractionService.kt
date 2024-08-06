@@ -3,7 +3,6 @@ package com.paradoxo.avva.ui.launcherService
 import android.content.Intent
 import android.os.Handler
 import android.service.voice.VoiceInteractionService
-import com.paradoxo.avva.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -18,10 +17,8 @@ class AvvaVoiceInteractionService : VoiceInteractionService() {
 
     override fun onCreate() {
         super.onCreate()
-        setTheme(R.style.Theme_AvvA)
-
+//        setTheme(R.style.Theme_AvvA)
         serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {

@@ -2,6 +2,8 @@ package com.paradoxo.avva.ui.result
 
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.transition.Fade
+import android.view.Window
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -71,7 +73,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.paradoxo.avva.R
 import com.paradoxo.avva.model.Action
-import com.paradoxo.avva.model.ActionType
 import com.paradoxo.avva.model.listActions
 import com.paradoxo.avva.model.sampleMessageList
 import com.paradoxo.avva.ui.components.ChatComponent
@@ -84,6 +85,7 @@ class ResultActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        setupEntryAndExitTransition()
 
         setContent {
             Box(
@@ -92,6 +94,7 @@ class ResultActivity : ComponentActivity() {
                 contentAlignment = Alignment.BottomCenter
             ) {
                 val viewModel = hiltViewModel<ResultViewModel>()
+                viewModel.loadPrintScreen(this@ResultActivity)
                 val state: ResultUiState by viewModel.uiState.collectAsState()
 
                 if (state.printScreen == null) {
@@ -135,6 +138,14 @@ class ResultActivity : ComponentActivity() {
                     )
                 }
             }
+        }
+    }
+
+    private fun setupEntryAndExitTransition() {
+        with(window) {
+            requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
+            enterTransition = Fade()
+            exitTransition = Fade()
         }
     }
 }

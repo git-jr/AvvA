@@ -1,5 +1,6 @@
 package com.paradoxo.avva.ui.result
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -27,12 +28,12 @@ class ResultViewModel @Inject constructor(
     var uiState = _uiState.asStateFlow()
 
     init {
-        loadPrintScreen()
+//        loadPrintScreen()
     }
 
-    private fun loadPrintScreen() {
+    fun loadPrintScreen(context: Context) {
         viewModelScope.launch {
-            getLastSavedImage().let {
+            getLastSavedImage(context = context).let {
                 _uiState.value = _uiState.value.copy(printScreen = it)
             }
         }

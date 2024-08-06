@@ -3,17 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="28" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
         android:name=".Application"
@@ -44,8 +38,8 @@
                 <action android:name="android.intent.extra.ASSIST_CONTEXT" />
                 <action android:name="android.intent.action.SEARCH_LONG_PRESS" />
             </intent-filter>
-        </activity> <!-- assessor services -->
-        <service android:name=".OverlayService" />
+        </activity>
+
         <service
             android:name=".ui.accessibilityService.AvvaAccessibilityService"
             android:exported="true"
