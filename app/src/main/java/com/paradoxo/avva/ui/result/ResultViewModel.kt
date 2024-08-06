@@ -5,11 +5,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.paradoxo.avva.gemini.GeminiAvvA
-import com.paradoxo.avva.getLastSavedImage
-import com.paradoxo.avva.model.Action
 import com.paradoxo.avva.model.Message
 import com.paradoxo.avva.model.Status
-import com.paradoxo.avva.model.ActionType
+import com.paradoxo.avva.util.getLastSavedImage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

@@ -17,7 +17,10 @@ import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun BackgroundScreen() {
+fun BackgroundScreen(
+    modifier: Modifier = Modifier,
+    text: String? = null
+) {
     val firstColor = Color(0xFF722CFF)
     val secondColor = Color(0xFF00BFA5)
 
@@ -35,16 +38,18 @@ fun BackgroundScreen() {
 
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(brush),
         contentAlignment = Alignment.Center
     ) {
-        Text(
-            text = "AvvA",
-            style = MaterialTheme.typography.titleLarge,
-            color = Color.White
-        )
+        text?.let {
+            Text(
+                text = it,
+                style = MaterialTheme.typography.titleLarge,
+                color = Color.White
+            )
+        }
     }
 }
 

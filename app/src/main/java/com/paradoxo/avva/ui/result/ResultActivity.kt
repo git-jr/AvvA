@@ -98,20 +98,7 @@ class ResultActivity : ComponentActivity() {
                 val state: ResultUiState by viewModel.uiState.collectAsState()
 
                 if (state.printScreen == null) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = stringResource(R.string.no_image_yet),
-                                    textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .clickable { recreate() }
-                                .background(Color.White)
-                                .padding(16.dp)
-                        )
-                    }
+                    BackgroundScreen(text = stringResource(R.string.no_image_yet))
                 }
 
                 Box(

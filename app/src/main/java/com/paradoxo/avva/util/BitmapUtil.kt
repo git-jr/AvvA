@@ -1,4 +1,4 @@
-package com.paradoxo.avva
+package com.paradoxo.avva.util
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -32,7 +32,7 @@ fun saveBitmapOnInternalStorageApp(context: Context, bitmap: Bitmap) {
 
 fun getLastSavedImage(context: Context): Bitmap? {
     try {
-        val directory = File(context.filesDir, "images/${FILE_NAME}")
+        val directory = File(context.filesDir, "images/$FILE_NAME")
         if (!directory.exists()) {
             return null
         }

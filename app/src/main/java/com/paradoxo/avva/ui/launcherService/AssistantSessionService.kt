@@ -1,6 +1,5 @@
 package com.paradoxo.avva.ui.launcherService
 
-import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -11,7 +10,7 @@ import android.service.voice.VoiceInteractionSession
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat.startActivity
-import com.paradoxo.avva.saveBitmapOnInternalStorageApp
+import com.paradoxo.avva.util.saveBitmapOnInternalStorageApp
 import com.paradoxo.avva.ui.result.ResultActivity
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow

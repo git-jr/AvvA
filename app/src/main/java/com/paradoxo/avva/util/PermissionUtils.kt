@@ -11,9 +11,6 @@ import java.util.Locale
 
 class PermissionUtils(private val context: Context) {
 
-    val overlayIsAllowed: Boolean
-        get() = Settings.canDrawOverlays(context)
-
     fun openOverlayPermission() {
         if ("xiaomi" == Build.MANUFACTURER.lowercase(Locale.ROOT)) {
             val intent = Intent("miui.intent.action.APP_PERM_EDITOR");
@@ -39,7 +36,7 @@ class PermissionUtils(private val context: Context) {
         context.startActivity(intent)
     }
 
-    fun defaultVoiceAssistantIsAvva(): Boolean {
+    fun checkVoiceAssistantIsAvva(): Boolean {
         try {
             val pm = context.packageManager
             val componentName = ComponentName.unflattenFromString(
@@ -50,7 +47,7 @@ class PermissionUtils(private val context: Context) {
                 val serviceInfo = pm.getServiceInfo(componentName, 0)
                 val applicationInfo = pm.getApplicationInfo(serviceInfo.packageName, 0)
                 val applicationLabel = pm.getApplicationLabel(applicationInfo).toString()
-                return applicationLabel.contains(   "avva", ignoreCase = true)
+                return applicationLabel.contains("avva", ignoreCase = true)
             }
         } catch (e: Exception) {
             Log.e("VoiceAssistant", "Error fetching voice assistant: ", e)
@@ -59,5 +56,8 @@ class PermissionUtils(private val context: Context) {
         return false
     }
 
+    fun checkOverlayPermission(): Boolean {
+        return Settings.canDrawOverlays(context)
+    }
 
 }
