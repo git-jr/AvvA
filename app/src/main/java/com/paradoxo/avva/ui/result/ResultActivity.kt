@@ -36,40 +36,47 @@ class ResultActivity : ComponentActivity() {
         setupEntryAndExitTransition()
 
         setContent {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize(),
-                contentAlignment = Alignment.BottomCenter
-            ) {
-                val viewModel = hiltViewModel<ResultViewModel>()
-                val state: ResultUiState by viewModel.uiState.collectAsState()
-
-                if (state.printScreen == null) {
-                    BackgroundScreen(text = stringResource(R.string.no_image_yet))
-                }
-
+            AvvATheme {
                 Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.BottomCenter
                 ) {
-                    Crossfade(
-                        targetState = state.usePrintScreen,
-                        label = "show print screen"
-                    ) { showImage ->
-                        if (showImage) {
-                            state.printScreen?.let { imageBitmap ->
-                                PrintScreen(imageBitmap)
-                            }
-                        } else {
-                            BackgroundScreen()
-                        }
+                    val viewModel = hiltViewModel<ResultViewModel>()
+                    val state: ResultUiState by viewModel.uiState.collectAsState()
+
+                    if (state.printScreen == null) {
+                        BackgroundScreen(text = stringResource(R.string.no_image_yet))
                     }
 
-                    EntryScreen(
-                        state = state,
-                        onToggleUsePrintScreen = { viewModel.toggleUsePrintScreen() },
-                        onSend = { prompt -> viewModel.getResponse(prompt) },
-                    )
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Crossfade(
+                            targetState = state.usePrintScreen,
+                            label = "show print screen"
+                        ) { showImage ->
+                            if (showImage) {
+                                state.printScreen?.let { imageBitmap ->
+                                    PrintScreen(imageBitmap)
+                                }
+                            } else {
+                                BackgroundScreen()
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .background(Color.Black.copy(alpha = 0.5f))
+                                )
+                            }
+                        }
+
+                        EntryScreen(
+                            state = state,
+                            onToggleUsePrintScreen = { viewModel.toggleUsePrintScreen() },
+                            onSend = { prompt -> viewModel.getResponse(prompt) },
+                        )
+                    }
                 }
             }
         }

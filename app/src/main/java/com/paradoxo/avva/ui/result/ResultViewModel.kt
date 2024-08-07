@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.paradoxo.avva.gemini.GeminiAvvA
 import com.paradoxo.avva.model.Message
 import com.paradoxo.avva.model.Status
+import com.paradoxo.avva.model.sampleMessageList
 import com.paradoxo.avva.util.BitmapUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay

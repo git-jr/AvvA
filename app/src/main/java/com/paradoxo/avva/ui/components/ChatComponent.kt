@@ -1,6 +1,7 @@
 package com.paradoxo.avva.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
@@ -25,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.paradoxo.avva.model.Message
 import com.paradoxo.avva.model.Status
 import com.paradoxo.avva.model.sampleMessageList
+import com.paradoxo.avva.ui.theme.AvvATheme
 import dev.jeziellago.compose.markdowntext.MarkdownText
 
 
@@ -35,7 +38,9 @@ fun ChatComponent(
 ) {
     Spacer(modifier = Modifier.height(8.dp))
     LazyColumn(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.background)
+            .fillMaxWidth(),
         reverseLayout = true
     ) {
         items(chatList.reversed()) { message ->
@@ -43,7 +48,8 @@ fun ChatComponent(
             val isAI = Status.AI == message.status
             Row(
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background),
                 horizontalArrangement = if (isAI) Arrangement.Start else Arrangement.End
             ) {
                 if (isUser) {
@@ -53,7 +59,7 @@ fun ChatComponent(
                 Column(
                     modifier = Modifier
                         .background(
-                            Color.White.copy(alpha = 0.2f),
+                            MaterialTheme.colorScheme.background.copy(alpha = 0.2f),
                             RoundedCornerShape(16.dp)
                         )
                         .padding(16.dp, 8.dp)
@@ -79,11 +85,11 @@ private fun ItemChatUser(message: Message) {
     MarkdownText(
         message.text,
         style = TextStyle(
-            color = Color.Black,
+            color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Justify,
         ),
         modifier = Modifier
-            .background(Color.LightGray.copy(0.5f), RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.onBackground.copy(0.2f), RoundedCornerShape(16.dp))
             .padding(16.dp, 8.dp)
     )
 }
@@ -94,7 +100,7 @@ private fun ItemChatAI(message: Message) {
     MarkdownText(
         message.text,
         style = TextStyle(
-            color = Color.Black,
+            color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Justify,
         )
     )
@@ -109,5 +115,8 @@ private fun ItemChatAI(message: Message) {
 private fun ChatComponentPreview() {
     val chatListSample: SnapshotStateList<Message> = remember { mutableStateListOf() }
     chatListSample.addAll(sampleMessageList)
-    ChatComponent(chatList = chatListSample)
+
+    AvvATheme {
+        ChatComponent(chatList = chatListSample)
+    }
 }
