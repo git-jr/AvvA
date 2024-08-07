@@ -30,7 +30,7 @@ class ResultViewModel @Inject constructor(
         loadPrintScreen()
     }
 
-    fun loadPrintScreen() {
+    private fun loadPrintScreen() {
         viewModelScope.launch {
             bitmapUtil.getLastSavedImage().let {
                 _uiState.value = _uiState.value.copy(printScreen = it)
@@ -43,8 +43,9 @@ class ResultViewModel @Inject constructor(
         addMessage(Message(prompt, Status.USER))
 
         viewModelScope.launch {
-            gemini.requestResponse(
+            gemini.chatRequestResponse(
                 prompt = prompt,
+                history = _uiState.value.chatList,
                 image = if (_uiState.value.usePrintScreen) _uiState.value.printScreen else null,
                 onSuccessful = { response ->
                     Log.d("ResultViewModelResponse", "Response: $response")
@@ -52,8 +53,10 @@ class ResultViewModel @Inject constructor(
                 },
                 onFailure = {
                     Log.e("ResultViewModelResponse", "Error: $it")
+                    addMessage(Message("An error occurred", Status.AI))
                 }
             )
+
         }.invokeOnCompletion {
             _uiState.value = _uiState.value.copy(loadingResponse = false)
         }

@@ -4,6 +4,8 @@ import android.graphics.Bitmap
 import com.google.ai.client.generativeai.Chat
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.content
+import com.paradoxo.avva.model.Message
+import com.paradoxo.avva.model.Status
 
 const val MODEL_NAME: String = "gemini-1.5-flash"
 
@@ -33,6 +35,33 @@ class GeminiAvvA(
     ) {
         try {
             generativeModel.generateContent(
+                content {
+                    image?.let { image(it) }
+                    text(prompt)
+                }
+            ).let { response ->
+                response.text?.let(onSuccessful)
+            }
+        } catch (e: Exception) {
+            onFailure(e.message ?: "An error occurred")
+        }
+    }
+
+    suspend fun chatRequestResponse(
+        prompt: String,
+        history: List<Message>,
+        image: Bitmap? = null,
+        onSuccessful: (String) -> Unit,
+        onFailure: (String) -> Unit
+    ) {
+        try {
+            val chat = generativeModel.startChat(
+                history = history.map {
+                    content(role = if(it.status == Status.AI) "model" else "user") { text(it.text) }
+                }
+            )
+
+            chat.sendMessage(
                 content {
                     image?.let { image(it) }
                     text(prompt)
