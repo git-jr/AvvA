@@ -109,7 +109,6 @@ fun PrintScreen(imageBitmap: Bitmap) {
 }
 
 
-
 @Preview(showBackground = true, backgroundColor = 0xFFE8AA75)
 @Composable
 fun MainScreenPreview() {
@@ -123,3 +122,4 @@ fun MainScreenPreview() {
         )
     }
 }
+
