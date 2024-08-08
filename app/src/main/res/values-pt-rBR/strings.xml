@@ -16,10 +16,12 @@
     <string name="other_action_command">Outra ação</string>
 
     <string name="no_image_yet">Nenhuma imagem disponível ainda.</string>
-    <string name="grant_permissions_avva_tittle">Para usar a AvvA, você precisa conceder algumas permissões</string>
+    <string name="grant_permissions_avva_tittle">Para usar AvvA em qualquer tela, ceda essas permissões</string>
     <string name="allow_screen_overlay">Permitir sobreposição de tela</string>
-    <string name="allow_app_overlay">Permite que o app exiba informações sobre outros apps</string>
+    <string name="allow_app_overlay">Permite que o app exiba informações sobre outros apps enquanto estiver em segundo plano</string>
     <string name="select_avva_default_assistant">Selecione "\"AvvA"\" como assistente de voz padrão</string>
     <string name="select_avva_assistant_app">Garante acesso ao conteúdo de outros apps</string>
+    <string name="chat_test">Testar chat</string>
+    <string name="tutorial">Tutorial</string>
 
 </resources>

@@ -1,5 +1,13 @@
 package com.paradoxo.avva.ui.permissions
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,6 +22,8 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -25,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -66,93 +77,136 @@ fun PermissionScreen(modifier: Modifier = Modifier) {
             modifier = Modifier.size(250.dp)
         )
 
-        Text(
-            stringResource(R.string.grant_permissions_avva_tittle),
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.padding(16.dp),
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onBackground
+        var expanded by remember { mutableStateOf(false) }
+        val rotation = animateFloatAsState(
+            targetValue = if (expanded) 180f else 0f,
+            animationSpec = tween(durationMillis = 300),
+            label = "rotation"
         )
 
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+                .clickable { expanded = !expanded },
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                stringResource(R.string.grant_permissions_avva_tittle),
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(8.dp),
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+
+            Icon(
+                imageVector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier
+                    .rotate(rotation.value)
+                    .size(36.dp)
+            )
+        }
         Spacer(modifier = Modifier.size(8.dp))
 
-        // 1 - Conceda permissão para sobrepor tela
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-                .clickable { permissionUtils.openOverlayPermission() }
-                .background(MaterialTheme.colorScheme.onBackground, shape = MaterialTheme.shapes.medium)
-                .padding(16.dp)
-                .sizeIn(minHeight = 56.dp)
-            ,
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+        AnimatedVisibility(
+            visible = expanded,
+            enter = expandVertically(
+                expandFrom = Alignment.Top
+            ) + fadeIn(
+                initialAlpha = 0.3f
+            ),
+            exit = slideOutVertically() + shrinkVertically() + fadeOut()
         ) {
             Column(
-                verticalArrangement = Arrangement.Center,
-                modifier = Modifier.weight(9f)
+                modifier = modifier
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    stringResource(R.string.allow_screen_overlay),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.background,
-                    fontWeight = FontWeight.Bold
-                )
+                // 1 - Conceda permissão para sobrepor tela
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                        .clickable { permissionUtils.openOverlayPermission() }
+                        .background(
+                            MaterialTheme.colorScheme.onBackground,
+                            shape = MaterialTheme.shapes.medium
+                        )
+                        .padding(16.dp)
+                        .sizeIn(minHeight = 56.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier.weight(9f)
+                    ) {
+                        Text(
+                            stringResource(R.string.allow_screen_overlay),
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.background,
+                            fontWeight = FontWeight.Bold
+                        )
 
-                Text(
-                    stringResource(R.string.allow_app_overlay),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.background
-                )
+                        Text(
+                            stringResource(R.string.allow_app_overlay),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.background
+                        )
+                    }
+                    Icon(
+                        imageVector = if (overlayIsAllowed) Icons.Filled.Check else Icons.Filled.Close,
+                        contentDescription = null,
+                        modifier = Modifier.weight(1f),
+                        tint = MaterialTheme.colorScheme.background
+                    )
+                }
+
+                // 2 - Selecione "Avva" como assistente de voz padrão
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                        .clickable { permissionUtils.openAssistantSettings() }
+                        .background(
+                            MaterialTheme.colorScheme.onBackground,
+                            shape = MaterialTheme.shapes.medium
+                        )
+                        .padding(16.dp)
+                        .sizeIn(minHeight = 56.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier.weight(9f)
+                    ) {
+                        Text(
+                            stringResource(R.string.select_avva_default_assistant),
+                            color = MaterialTheme.colorScheme.background,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        Text(
+                            stringResource(R.string.select_avva_assistant_app),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.background
+                        )
+                    }
+
+                    Icon(
+                        imageVector = if (avvaIsDefaultAssistant) Icons.Filled.Check else Icons.Filled.Close,
+                        contentDescription = null,
+                        modifier = Modifier.weight(1f),
+                        tint = MaterialTheme.colorScheme.background
+                    )
+
+                }
             }
-            Icon(
-                imageVector = if (overlayIsAllowed) Icons.Filled.Check else Icons.Filled.Close,
-                contentDescription = null,
-                modifier = Modifier.weight(1f),
-                tint = MaterialTheme.colorScheme.background
-            )
         }
-
-        // 2 - Selecione "Avva" como assistente de voz padrão
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-                .clickable { permissionUtils.openAssistantSettings() }
-                .background(MaterialTheme.colorScheme.onBackground, shape = MaterialTheme.shapes.medium)
-                .padding(16.dp)
-                .sizeIn(minHeight = 56.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                modifier = Modifier.weight(9f)
-            ) {
-                Text(
-                    stringResource(R.string.select_avva_default_assistant),
-                    color = MaterialTheme.colorScheme.background,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
-
-                Text(
-                    stringResource(R.string.select_avva_assistant_app),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.background
-                )
-            }
-
-            Icon(
-                imageVector = if (avvaIsDefaultAssistant) Icons.Filled.Check else Icons.Filled.Close,
-                contentDescription = null,
-                modifier = Modifier.weight(1f),
-                tint = MaterialTheme.colorScheme.background
-            )
-
-        }
-
         Spacer(modifier = Modifier.size(36.dp))
     }
 }

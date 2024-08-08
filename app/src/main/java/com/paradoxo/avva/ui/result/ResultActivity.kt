@@ -1,5 +1,6 @@
 package com.paradoxo.avva.ui.result
 
+import android.app.Activity
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.transition.Fade
@@ -12,6 +13,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -19,7 +21,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -36,6 +40,7 @@ class ResultActivity : ComponentActivity() {
         setupEntryAndExitTransition()
 
         setContent {
+            WindowInsetsSetup()
             AvvATheme {
                 Box(
                     modifier = Modifier
@@ -53,6 +58,13 @@ class ResultActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
+                        BackgroundScreen()
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(Color.Black.copy(alpha = 0.5f))
+                        )
+
                         Crossfade(
                             targetState = state.usePrintScreen,
                             label = "show print screen"
@@ -61,13 +73,6 @@ class ResultActivity : ComponentActivity() {
                                 state.printScreen?.let { imageBitmap ->
                                     PrintScreen(imageBitmap)
                                 }
-                            } else {
-                                BackgroundScreen()
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .background(Color.Black.copy(alpha = 0.5f))
-                                )
                             }
                         }
 
@@ -88,6 +93,13 @@ class ResultActivity : ComponentActivity() {
             enterTransition = Fade()
             exitTransition = Fade()
         }
+    }
+
+    @Composable
+    private fun WindowInsetsSetup() {
+        val view = LocalView.current
+        val window = (view.context as Activity).window
+        window.navigationBarColor = MaterialTheme.colorScheme.background.copy(0.2f).toArgb()
     }
 }
 

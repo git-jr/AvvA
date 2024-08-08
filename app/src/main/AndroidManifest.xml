@@ -22,8 +22,17 @@
         tools:targetApi="31">
         <activity
             android:name=".ui.result.ResultActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize">
+
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+
+                <action android:name="android.intent.action.ASSIST" />
+                <action android:name="android.intent.extra.ASSIST_CONTEXT" />
+                <action android:name="android.intent.action.SEARCH_LONG_PRESS" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -33,10 +42,6 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-
-                <action android:name="android.intent.action.ASSIST" />
-                <action android:name="android.intent.extra.ASSIST_CONTEXT" />
-                <action android:name="android.intent.action.SEARCH_LONG_PRESS" />
             </intent-filter>
         </activity>
 

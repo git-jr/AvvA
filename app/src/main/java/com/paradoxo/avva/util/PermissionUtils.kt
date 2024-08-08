@@ -11,8 +11,12 @@ import java.util.Locale
 
 class PermissionUtils(private val context: Context) {
 
+    val isXiaomiDevice: Boolean
+        get() = "xiaomi" == Build.MANUFACTURER.lowercase(Locale.ROOT)
+
+
     fun openOverlayPermission() {
-        if ("xiaomi" == Build.MANUFACTURER.lowercase(Locale.ROOT)) {
+        if (isXiaomiDevice) {
             val intent = Intent("miui.intent.action.APP_PERM_EDITOR");
             intent.setClassName(
                 "com.miui.securitycenter",
