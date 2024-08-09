@@ -1,4 +1,4 @@
-package com.paradoxo.avva.ui.result
+package com.paradoxo.avva.ui.assistant
 
 import android.app.Activity
 import android.graphics.Bitmap
@@ -33,7 +33,7 @@ import com.paradoxo.avva.ui.theme.AvvATheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ResultActivity : ComponentActivity() {
+class AssistantActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -47,8 +47,8 @@ class ResultActivity : ComponentActivity() {
                         .fillMaxSize(),
                     contentAlignment = Alignment.BottomCenter
                 ) {
-                    val viewModel = hiltViewModel<ResultViewModel>()
-                    val state: ResultUiState by viewModel.uiState.collectAsState()
+                    val viewModel = hiltViewModel<AssistantViewModel>()
+                    val state: AssistantUiState by viewModel.uiState.collectAsState()
 
                     if (state.printScreen == null) {
                         BackgroundScreen(text = stringResource(R.string.no_image_yet))
@@ -79,7 +79,9 @@ class ResultActivity : ComponentActivity() {
                         EntryScreen(
                             state = state,
                             onToggleUsePrintScreen = { viewModel.toggleUsePrintScreen() },
-                            onSend = { prompt -> viewModel.getResponse(prompt) },
+                            onSend = { prompt ->
+                                viewModel.getResponse(getString(R.string.handle_music_prompt, prompt))
+                            },
                         )
                     }
                 }
@@ -134,7 +136,7 @@ fun MainScreenPreview() {
     AvvATheme {
         PrintScreen(Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888))
         EntryScreen(
-            state = ResultUiState(
+            state = AssistantUiState(
                 chatList = sampleMessageList
             ),
             defaultShowContent = true

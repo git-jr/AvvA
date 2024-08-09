@@ -22,5 +22,6 @@
     <string name="select_avva_assistant_app">Grants access to the content of other apps.</string>
     <string name="chat_test">Chat Test</string>
     <string name="tutorial">Tutorial</string>
+    <string name="handle_music_prompt">Se o prompt a seguir indicar uma solicitação para tocar, ouvir ou reproduzir uma música, retorne um JSON no formato \'{findSound: \"nome da música\"}\'. Caso contrário, responda normalmente, fornecendo uma resposta informativa e relevante ao contexto da pergunta.\nConteúdo do prompt: %1$s</string>
 
 </resources>

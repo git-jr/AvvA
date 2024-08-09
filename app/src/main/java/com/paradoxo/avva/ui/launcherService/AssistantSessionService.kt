@@ -10,7 +10,7 @@ import android.service.voice.VoiceInteractionSession
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat.startActivity
-import com.paradoxo.avva.ui.result.ResultActivity
+import com.paradoxo.avva.ui.assistant.AssistantActivity
 import com.paradoxo.avva.util.BitmapUtil
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,9 +35,9 @@ class AssistantSessionService(private val context: Context?) : VoiceInteractionS
     }
 
 
-    private fun openResultActivity() {
+    private fun openAssistantActivity() {
         context?.let {
-            val intent = Intent(context, ResultActivity::class.java)
+            val intent = Intent(context, AssistantActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             intent.addCategory(Intent.CATEGORY_HOME)
             startActivity(context, intent, null)
@@ -56,7 +56,7 @@ class AssistantSessionService(private val context: Context?) : VoiceInteractionS
         screenshot?.let { screenshotBitmap ->
             Log.d("onHandleScreenshot42", "Print disponível")
             context?.let { BitmapUtil(context).saveBitmapOnInternalStorageApp(screenshotBitmap) }
-            openResultActivity()
+            openAssistantActivity()
         } ?: run {
             Log.d("onHandleScreenshot42", "Náo printou")
         }

@@ -1,4 +1,4 @@
-package com.paradoxo.avva.ui.result
+package com.paradoxo.avva.ui.assistant
 
 import android.util.Log
 import android.widget.Toast
@@ -74,7 +74,7 @@ import kotlinx.coroutines.delay
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EntryScreen(
-    state: ResultUiState,
+    state: AssistantUiState,
     onSend: (String) -> Unit = {},
     onToggleUsePrintScreen: () -> Unit = {},
     defaultShowContent: Boolean = false
@@ -325,7 +325,7 @@ private fun SmartSuggestionsContainer(
 private fun EntryScreenPreview() {
     AvvATheme {
         EntryScreen(
-            state = ResultUiState(
+            state = AssistantUiState(
                 chatList = sampleMessageList,
             ),
             defaultShowContent = true

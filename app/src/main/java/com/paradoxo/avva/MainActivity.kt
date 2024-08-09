@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -32,12 +31,9 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
 import com.paradoxo.avva.ui.launcherService.AvvaVoiceInteractionService
 import com.paradoxo.avva.ui.permissions.PermissionScreen
-import com.paradoxo.avva.ui.result.ResultActivity
+import com.paradoxo.avva.ui.assistant.AssistantActivity
 import com.paradoxo.avva.ui.theme.AvvATheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -56,8 +52,8 @@ class MainActivity : ComponentActivity() {
                     openTutorial = {
                         openTutorial()
                     },
-                    openResultActivity = {
-                        openResultActivity()
+                    openAssistantActivity = {
+                        openAssistantActivity()
                     }
                 )
             }
@@ -81,8 +77,8 @@ class MainActivity : ComponentActivity() {
     }
 
 
-    private fun openResultActivity() {
-        val intent = Intent(this, ResultActivity::class.java)
+    private fun openAssistantActivity() {
+        val intent = Intent(this, AssistantActivity::class.java)
         startActivity(
             intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle()
         )
@@ -100,7 +96,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun MainScreen(
     openTutorial: () -> Unit = {},
-    openResultActivity: () -> Unit = {}
+    openAssistantActivity: () -> Unit = {}
 ) {
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Column(
@@ -120,7 +116,7 @@ private fun MainScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Button(
-                    onClick = { openResultActivity() },
+                    onClick = { openAssistantActivity() },
                     shape = MaterialTheme.shapes.extraLarge,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f)

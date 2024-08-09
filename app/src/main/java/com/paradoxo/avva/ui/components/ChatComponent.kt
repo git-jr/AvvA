@@ -89,7 +89,10 @@ private fun ItemChatUser(message: Message) {
             textAlign = TextAlign.Justify,
         ),
         modifier = Modifier
-            .background(MaterialTheme.colorScheme.onBackground.copy(0.2f), RoundedCornerShape(16.dp))
+            .background(
+                MaterialTheme.colorScheme.onBackground.copy(0.1f),
+                RoundedCornerShape(16.dp)
+            )
             .padding(16.dp, 8.dp)
     )
 }
