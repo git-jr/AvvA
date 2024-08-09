@@ -7,6 +7,8 @@ import com.paradoxo.avva.gemini.GeminiAvvA
 import com.paradoxo.avva.model.Message
 import com.paradoxo.avva.model.Status
 import com.paradoxo.avva.model.sampleMessageList
+import com.paradoxo.avva.ui.accessibilityService.clickAccessibilityService
+import com.paradoxo.avva.util.ActionHandler
 import com.paradoxo.avva.util.BitmapUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -18,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ResultViewModel @Inject constructor(
     private val gemini: GeminiAvvA,
-    private val bitmapUtil: BitmapUtil
+    private val bitmapUtil: BitmapUtil,
+    private val actionHandler: ActionHandler
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
@@ -40,15 +43,30 @@ class ResultViewModel @Inject constructor(
     }
 
     fun getResponse(prompt: String) {
+        val customPrompt = "Se o prompt a seguir indicar uma solicitação para tocar, ouvir ou reproduzir uma música, retorne um JSON no formato '{findSound: \"nome da música\"}'. Caso contrário, responda normalmente, fornecendo uma resposta informativa e relevante ao contexto da pergunta.\nConteúdo do prompt: $prompt"
+
         _uiState.value = _uiState.value.copy(loadingResponse = true)
         addMessage(Message(prompt, Status.USER))
 
         viewModelScope.launch {
             gemini.chatRequestResponse(
-                prompt = prompt,
+                prompt = customPrompt,
                 history = _uiState.value.chatList,
                 image = if (_uiState.value.usePrintScreen) _uiState.value.printScreen else null,
                 onSuccessful = { response ->
+                    if (response.contains("findSound:")) {
+                        addMessage(Message("Abrindo o YouTube...", Status.AI))
+                        val musicName = response.substringAfter("findSound:").substringBefore("}").trim()
+                        actionHandler.playYTMusic(musicName) {
+                            Log.d("ResultViewModel", "Music playing")
+                            viewModelScope.launch {
+                                delay(2000)
+                                clickAccessibilityService?.click(500, 500)
+                            }
+                        }
+
+                        return@chatRequestResponse
+                    }
                     Log.d("ResultViewModelResponse", "Response: $response")
                     addMessage(Message(response, Status.AI))
                 },

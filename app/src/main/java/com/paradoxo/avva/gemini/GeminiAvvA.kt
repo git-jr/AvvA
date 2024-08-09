@@ -3,7 +3,9 @@ package com.paradoxo.avva.gemini
 import android.graphics.Bitmap
 import com.google.ai.client.generativeai.Chat
 import com.google.ai.client.generativeai.GenerativeModel
+import com.google.ai.client.generativeai.type.GenerationConfig
 import com.google.ai.client.generativeai.type.content
+import com.google.ai.client.generativeai.type.generationConfig
 import com.paradoxo.avva.model.Message
 import com.paradoxo.avva.model.Status
 
@@ -20,9 +22,14 @@ class GeminiAvvA(
     }
 
     private fun loadModel() {
+        val config = generationConfig {
+            temperature = 0.9f
+        }
+
         generativeModel = GenerativeModel(
             modelName = MODEL_NAME,
-            apiKey = apiKey
+            apiKey = apiKey,
+            generationConfig = config
         )
         chat = generativeModel.startChat()
     }
@@ -57,7 +64,7 @@ class GeminiAvvA(
         try {
             val chat = generativeModel.startChat(
                 history = history.map {
-                    content(role = if(it.status == Status.AI) "model" else "user") { text(it.text) }
+                    content(role = if (it.status == Status.AI) "model" else "user") { text(it.text) }
                 }
             )
 
