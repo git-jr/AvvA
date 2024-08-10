@@ -16,15 +16,20 @@
 
     <string name="no_image_yet">No image available yet.</string>
     <string name="grant_permissions_avva_tittle">To use AvvA on any screen, grant these permissions</string>
-    <string name="allow_screen_overlay">Allow screen overlay</string>
-    <string name="allow_app_overlay">Allows the app to display information over other apps while running in the background.</string>
-    <string name="select_avva_default_assistant">Select "\"AvvA"\" as the default Voice Assistant App</string>
+
     <string name="select_avva_assistant_app">Grants access to the content of other apps.</string>
-    <string name="chat_test">Chat Test</string>
-    <string name="tutorial">Tutorial</string>
-    <string name="handle_music_prompt">If the following prompt indicates a request to play, listen to, or reproduce a song, return a JSON in the format {"findSound": "song name"}. Otherwise, respond normally by providing an informative and contextually relevant answer to the question. Prompt content: %1$s</string>
+    <string name="allow_screen_overlay">Allow screen overlay</string>
+
+    <string name="select_avva_default_assistant">Select "\"AvvA"\" as the default Voice Assistant App</string>
+    <string name="allow_app_overlay">Allows the app to display information over other apps while running in the background.</string>
+
     <string name="allow_accessibility">Accessibility service (optional)</string>
     <string name="select_avva_accessibility">Select "\"AvvA Assistant"\" in "\"Downloaded Apps"\" to unlock responses with taps and gestures.</string>
+
+    <string name="chat_test">Chat Test</string>
+    <string name="tutorial">Tutorial</string>
+
+    <string name="handle_music_prompt">If the following prompt indicates a request to play, listen to, or reproduce a song, return a JSON in the format \'{findSound: "\"song name"\"}\'. Otherwise, respond normally by providing an informative and contextually relevant answer to the question. Prompt content: %1$s</string>
     <string name="error_listening">I couldn\'t hear. Try again.</string>
     <string name="listening">Listening…</string>
 

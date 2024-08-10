@@ -53,18 +53,17 @@ class AssistantViewModel @Inject constructor(
         }
     }
 
-    fun getResponse(prompt: String) {
+    fun getResponse(searchPrompt: String, rawPrompt: String) {
         _uiState.value = _uiState.value.copy(loadingResponse = true, enableEdit = false)
-        addMessage(Message(prompt, Status.USER))
+        addMessage(Message(rawPrompt, Status.USER))
 
         viewModelScope.launch {
             gemini.chatRequestResponse(
-                prompt = prompt,
+                prompt = searchPrompt,
                 history = _uiState.value.chatList,
                 image = if (_uiState.value.usePrintScreen) _uiState.value.printScreen else null,
                 onSuccessful = { response ->
                     if (response.contains("findSound:")) {
-                        addMessage(Message("Abrindo o YouTube...", Status.AI))
                         val musicName =
                             response.substringAfter("findSound:").substringBefore("}").trim()
                         actionHandler.playYTMusic(musicName) {

@@ -86,7 +86,8 @@ class AssistantActivity : ComponentActivity() {
                                     getString(
                                         R.string.handle_music_prompt,
                                         prompt
-                                    )
+                                    ),
+                                    prompt
                                 )
                             },
                             onToggleListening = { viewModel.toggleListening() },
