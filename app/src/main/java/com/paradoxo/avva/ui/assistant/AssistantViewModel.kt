@@ -70,7 +70,7 @@ class AssistantViewModel @Inject constructor(
                 onSuccessful = { response ->
                     if (response.contains("findSound:")) {
                         val musicName =
-                            response.substringAfter("findSound:").substringBefore("}").trim()
+                            response.substringAfter("findSound:").substringBefore("}").replace("\"", "").trim()
                         actionHandler.playYTMusic(musicName) {
                             Log.d("AssistantViewModel", "Music playing")
                             viewModelScope.launch {
@@ -116,7 +116,6 @@ class AssistantViewModel @Inject constructor(
         if (uiState.value.isListening) {
             speechToText.stopListening()
         } else {
-            _uiState.value = _uiState.value.copy(isListening = true)
             speechToText.startListening()
         }
     }

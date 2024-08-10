@@ -325,34 +325,39 @@ private fun EditText(
             contentAlignment = Alignment.Center
         ) {
             Crossfade(
-                targetState = state.entryText.isBlank(),
+                targetState = state.isListening,
                 label = ""
-            ) { isMicButton ->
-                if (isMicButton) {
+            ) { isListening ->
+                if (state.entryText.isBlank()) {
                     IconButton(
                         onClick = { onToggleListening() },
                     ) {
                         Icon(
-                            painterResource(if (state.isListening) R.drawable.ic_stop else R.drawable.ic_mic),
-                            contentDescription = if (state.isListening) "Parar de ouvir" else "Ouvir",
+                            painterResource(if (isListening) R.drawable.ic_stop else R.drawable.ic_mic),
+                            contentDescription = if (isListening) "Parar de ouvir" else "Ouvir",
                             tint = MaterialTheme.colorScheme.onBackground,
+                            modifier = Modifier.background( MaterialTheme.colorScheme.background)
                         )
                     }
-                } else {
+                }
+            }
+            Crossfade(
+                targetState = !state.isListening && state.entryText.isNotBlank(),
+                label = ""
+            ) { show ->
+                if (show) {
                     IconButton(
-                        onClick = {
-                            onSend(state.entryText)
-                        }
+                        onClick = { onSend(state.entryText) }
                     ) {
                         Icon(
                             Icons.AutoMirrored.Filled.Send,
                             contentDescription = "Enviar",
                             tint = MaterialTheme.colorScheme.onBackground,
+                            modifier = Modifier.background( MaterialTheme.colorScheme.background)
                         )
                     }
                 }
             }
-
         }
     }
 }

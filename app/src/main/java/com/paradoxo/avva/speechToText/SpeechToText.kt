@@ -52,6 +52,7 @@ class SpeechToText @Inject constructor(
 
             recognizer.setRecognitionListener(this)
             recognizer.startListening(intent)
+            _state.update { it.copy(isListening = true) }
         } else {
             Log.d("SpeechToText47", "startListening isAvailable é false")
             checkIsAvailable(true)
@@ -103,7 +104,7 @@ class SpeechToText @Inject constructor(
         Log.d("SpeechToText47", "onError: $errorMessage")
 
         _state.update {
-            it.copy(error = true)
+            it.copy(error = true, isListening = false)
         }
     }
 
