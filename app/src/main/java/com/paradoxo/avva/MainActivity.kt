@@ -45,7 +45,7 @@ class MainActivity : ComponentActivity() {
         startInteractionService()
         enableEdgeToEdge()
 
-        startActivity(Intent(this, AssistantActivity::class.java))
+//        startActivity(Intent(this, AssistantActivity::class.java))
 
         setContent {
             WindowInsetsSetup()

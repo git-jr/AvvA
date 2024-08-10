@@ -8,7 +8,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -36,7 +35,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -45,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.paradoxo.avva.R
+import com.paradoxo.avva.ui.components.AvvAFace
 import com.paradoxo.avva.ui.theme.AvvATheme
 import com.paradoxo.avva.util.PermissionUtils
 
@@ -72,11 +71,7 @@ fun PermissionScreen(modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.avva_square_transparent),
-            contentDescription = null,
-            modifier = Modifier.size(250.dp)
-        )
+        AvvAFace(250.dp)
 
         var expanded by remember { mutableStateOf(false) }
         val rotation = animateFloatAsState(

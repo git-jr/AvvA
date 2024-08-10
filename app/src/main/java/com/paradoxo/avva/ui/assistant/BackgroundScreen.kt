@@ -1,6 +1,5 @@
 package com.paradoxo.avva.ui.assistant
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,10 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.paradoxo.avva.R
+import com.paradoxo.avva.ui.components.AvvAFace
 
 @Composable
 fun BackgroundScreen(
@@ -34,11 +32,7 @@ fun BackgroundScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.avva_square_transparent),
-                contentDescription = "Logo",
-                modifier = Modifier.size(300.dp)
-            )
+            AvvAFace(300.dp)
 
             text?.let {
                 Text(
