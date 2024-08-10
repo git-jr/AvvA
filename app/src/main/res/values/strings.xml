@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">AvvA</string>
-    <string name="accessibility_service_label">AvvA Accessibility Service</string>
-    <string name="accessibility_service_description">Accessibility Service for AvvA</string>
+    <string name="accessibility_service_label">AvvA Assistant</string>
+    <string name="accessibility_service_description">Allows the AvvA to interact with other apps through taps and gestures.</string>
     <string name="screen_content">Use screen content.</string>
     <string name="what_to_do">What do you want to do?</string>
 
@@ -22,6 +22,8 @@
     <string name="select_avva_assistant_app">Grants access to the content of other apps.</string>
     <string name="chat_test">Chat Test</string>
     <string name="tutorial">Tutorial</string>
-    <string name="handle_music_prompt">Se o prompt a seguir indicar uma solicitação para tocar, ouvir ou reproduzir uma música, retorne um JSON no formato \'{findSound: \"nome da música\"}\'. Caso contrário, responda normalmente, fornecendo uma resposta informativa e relevante ao contexto da pergunta.\nConteúdo do prompt: %1$s</string>
+    <string name="handle_music_prompt">If the following prompt indicates a request to play, listen to, or reproduce a song, return a JSON in the format {"findSound": "song name"}. Otherwise, respond normally by providing an informative and contextually relevant answer to the question. Prompt content: %1$s</string>
+    <string name="allow_accessibility">Accessibility service (optional)</string>
+    <string name="select_avva_accessibility">Select "\"AvvA Assistant"\" in "\"Downloaded Apps"\" to unlock responses with taps and gestures.</string>
 
 </resources>

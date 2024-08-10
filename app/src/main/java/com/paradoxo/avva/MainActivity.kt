@@ -31,9 +31,9 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.paradoxo.avva.ui.assistant.AssistantActivity
 import com.paradoxo.avva.ui.launcherService.AvvaVoiceInteractionService
 import com.paradoxo.avva.ui.permissions.PermissionScreen
-import com.paradoxo.avva.ui.assistant.AssistantActivity
 import com.paradoxo.avva.ui.theme.AvvATheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -109,7 +109,6 @@ private fun MainScreen(
             Spacer(modifier = Modifier.size(32.dp))
 
             PermissionScreen()
-
 
             Row(
                 horizontalArrangement = Arrangement.SpaceEvenly,

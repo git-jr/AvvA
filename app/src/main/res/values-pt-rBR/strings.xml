@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">AvvA</string>
-    <string name="accessibility_service_label">AvvA Accessibility Service</string>
-    <string name="accessibility_service_description">Accessibility Service for AvvA</string>
+    <string name="accessibility_service_label">AvvA Assistente</string>
+    <string name="accessibility_service_description">Permite que AvvA possa interagir com outros app através de toques e gestos.</string>
     <string name="screen_content">Usar conteúdo da tela</string>
     <string name="what_to_do">O que você deseja fazer?</string>
 
@@ -17,12 +17,17 @@
 
     <string name="no_image_yet">Nenhuma imagem disponível ainda.</string>
     <string name="grant_permissions_avva_tittle">Para usar AvvA em qualquer tela, ceda essas permissões</string>
+
     <string name="allow_screen_overlay">Permitir sobreposição de tela</string>
-    <string name="allow_app_overlay">Permite que o app exiba informações sobre outros apps enquanto estiver em segundo plano</string>
-    <string name="select_avva_default_assistant">Selecione "\"AvvA"\" como assistente de voz padrão</string>
     <string name="select_avva_assistant_app">Garante acesso ao conteúdo de outros apps</string>
+
+    <string name="select_avva_default_assistant">Selecione "\"AvvA"\" como assistente de voz padrão</string>
+    <string name="allow_app_overlay">Permite que o app exiba informações sobre outros apps enquanto estiver em segundo plano</string>
+
+    <string name="allow_accessibility">Serviço de acessibilidade (opcional)</string>
+    <string name="select_avva_accessibility">Selecione "\"AvvA Assistente"\" em "\"Apps transferidos por download"\", para desbloquear respostas com toques e gestos.</string>
+
     <string name="chat_test">Testar chat</string>
     <string name="tutorial">Tutorial</string>
-    <string name="handle_music_prompt">Se o prompt a seguir indicar uma solicitação para tocar, ouvir ou reproduzir uma música, retorne um JSON no formato \'{findSound: \"nome da música\"}\'. Caso contrário, responda normalmente, fornecendo uma resposta informativa e relevante ao contexto da pergunta.\nConteúdo do prompt: %1$s</string>
-
+    <string name="handle_music_prompt">Se o prompt a seguir indicar uma solicitação para tocar, ouvir ou reproduzir uma música, retorne um JSON no formato {"findSound": "song name"}. Caso contrário, responda normalmente, fornecendo uma resposta informativa e relevante ao contexto da pergunta.\nConteúdo do prompt: %1$s</string>
 </resources>

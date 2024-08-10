@@ -1,5 +1,6 @@
 package com.paradoxo.avva.util
 
+import android.accessibilityservice.AccessibilityServiceInfo
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -7,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
+import android.view.accessibility.AccessibilityManager
 import java.util.Locale
 
 class PermissionUtils(private val context: Context) {
@@ -40,6 +42,11 @@ class PermissionUtils(private val context: Context) {
         context.startActivity(intent)
     }
 
+    fun openAccessibilitySettings() {
+        val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+        context.startActivity(intent)
+    }
+
     fun checkVoiceAssistantIsAvva(): Boolean {
         try {
             val pm = context.packageManager
@@ -62,6 +69,21 @@ class PermissionUtils(private val context: Context) {
 
     fun checkOverlayPermission(): Boolean {
         return Settings.canDrawOverlays(context)
+    }
+
+    fun checkAccessibilityPermission(): Boolean {
+        val manager =
+            context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
+        val accessibilityServiceList =
+            manager.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK)
+        for (id in accessibilityServiceList) {
+            val serviceName = id.resolveInfo.serviceInfo.name
+            if (serviceName != null && serviceName.contains(context.packageName)) {
+                Log.d("AccessibilityAvvA", "Accessibility enabled: $serviceName")
+                return true
+            }
+        }
+        return false
     }
 
 }

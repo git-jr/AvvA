@@ -24,7 +24,6 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -58,10 +57,12 @@ fun PermissionScreen(modifier: Modifier = Modifier) {
 
     var overlayIsAllowed by remember { mutableStateOf(permissionUtils.checkOverlayPermission()) }
     var avvaIsDefaultAssistant by remember { mutableStateOf(permissionUtils.checkVoiceAssistantIsAvva()) }
+    var avvaIsAccessibility by remember { mutableStateOf(permissionUtils.checkAccessibilityPermission()) }
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         overlayIsAllowed = permissionUtils.checkOverlayPermission()
         avvaIsDefaultAssistant = permissionUtils.checkVoiceAssistantIsAvva()
+        avvaIsAccessibility = permissionUtils.checkAccessibilityPermission()
     }
 
 
@@ -89,7 +90,7 @@ fun PermissionScreen(modifier: Modifier = Modifier) {
                 .fillMaxWidth()
                 .padding(8.dp)
                 .clickable { expanded = !expanded },
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
                 stringResource(R.string.grant_permissions_avva_tittle),
@@ -124,90 +125,82 @@ fun PermissionScreen(modifier: Modifier = Modifier) {
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // 1 - Conceda permissão para sobrepor tela
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
-                        .clickable { permissionUtils.openOverlayPermission() }
-                        .background(
-                            MaterialTheme.colorScheme.onBackground,
-                            shape = MaterialTheme.shapes.medium
-                        )
-                        .padding(16.dp)
-                        .sizeIn(minHeight = 56.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(
-                        verticalArrangement = Arrangement.Center,
-                        modifier = Modifier.weight(9f)
-                    ) {
-                        Text(
-                            stringResource(R.string.allow_screen_overlay),
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.background,
-                            fontWeight = FontWeight.Bold
-                        )
+                // 1 - Overlay screen permission
+                ContainerPermissionName(
+                    isAllowed = overlayIsAllowed,
+                    title = R.string.allow_screen_overlay,
+                    description = R.string.allow_app_overlay,
+                    onClick = { permissionUtils.openOverlayPermission() },
+                )
 
-                        Text(
-                            stringResource(R.string.allow_app_overlay),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.background
-                        )
-                    }
-                    Icon(
-                        imageVector = if (overlayIsAllowed) Icons.Filled.Check else Icons.Filled.Close,
-                        contentDescription = null,
-                        modifier = Modifier.weight(1f),
-                        tint = MaterialTheme.colorScheme.background
-                    )
-                }
+                // 2 - Default assistant permission
+                ContainerPermissionName(
+                    isAllowed = avvaIsDefaultAssistant,
+                    title = R.string.select_avva_default_assistant,
+                    description = R.string.select_avva_assistant_app,
+                    onClick = { permissionUtils.openAssistantSettings() },
+                )
 
-                // 2 - Selecione "Avva" como assistente de voz padrão
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
-                        .clickable { permissionUtils.openAssistantSettings() }
-                        .background(
-                            MaterialTheme.colorScheme.onBackground,
-                            shape = MaterialTheme.shapes.medium
-                        )
-                        .padding(16.dp)
-                        .sizeIn(minHeight = 56.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(
-                        verticalArrangement = Arrangement.Center,
-                        modifier = Modifier.weight(9f)
-                    ) {
-                        Text(
-                            stringResource(R.string.select_avva_default_assistant),
-                            color = MaterialTheme.colorScheme.background,
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold
-                        )
+                // 3 - Accessibility permission
+                ContainerPermissionName(
+                    isAllowed = avvaIsAccessibility,
+                    title = R.string.allow_accessibility,
+                    description = R.string.select_avva_accessibility,
+                    onClick = { permissionUtils.openAccessibilitySettings() },
+                )
 
-                        Text(
-                            stringResource(R.string.select_avva_assistant_app),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.background
-                        )
-                    }
-
-                    Icon(
-                        imageVector = if (avvaIsDefaultAssistant) Icons.Filled.Check else Icons.Filled.Close,
-                        contentDescription = null,
-                        modifier = Modifier.weight(1f),
-                        tint = MaterialTheme.colorScheme.background
-                    )
-
-                }
             }
         }
         Spacer(modifier = Modifier.size(36.dp))
+    }
+}
+
+
+@Composable
+fun ContainerPermissionName(
+    modifier: Modifier = Modifier,
+    title: Int,
+    description: Int,
+    isAllowed: Boolean,
+    onClick: () -> Unit,
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .clickable { onClick() }
+            .background(
+                MaterialTheme.colorScheme.onBackground,
+                shape = MaterialTheme.shapes.medium
+            )
+            .padding(16.dp)
+            .sizeIn(minHeight = 56.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.weight(9f)
+        ) {
+            Text(
+                stringResource(title),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.background,
+                fontWeight = FontWeight.Bold
+            )
+
+            Text(
+                stringResource(description),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.background
+            )
+        }
+        Icon(
+            imageVector = if (isAllowed) Icons.Filled.Check else Icons.Filled.Close,
+            contentDescription = null,
+            modifier = Modifier.weight(1f),
+            tint = MaterialTheme.colorScheme.background
+        )
     }
 }
 
