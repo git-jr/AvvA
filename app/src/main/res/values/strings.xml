@@ -25,5 +25,6 @@
     <string name="handle_music_prompt">If the following prompt indicates a request to play, listen to, or reproduce a song, return a JSON in the format {"findSound": "song name"}. Otherwise, respond normally by providing an informative and contextually relevant answer to the question. Prompt content: %1$s</string>
     <string name="allow_accessibility">Accessibility service (optional)</string>
     <string name="select_avva_accessibility">Select "\"AvvA Assistant"\" in "\"Downloaded Apps"\" to unlock responses with taps and gestures.</string>
+    <string name="error_listening">I couldn\'t hear. Try again.</string>
 
 </resources>

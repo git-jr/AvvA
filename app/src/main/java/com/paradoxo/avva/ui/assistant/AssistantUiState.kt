@@ -8,5 +8,8 @@ data class AssistantUiState(
     val chatList: List<Message> = emptyList(),
     val usePrintScreen: Boolean = true,
     val loadingResponse: Boolean = false,
-    val printScreen: Bitmap? = null
+    val printScreen: Bitmap? = null,
+    val isListening: Boolean = false,
+    val isErrorListening: Boolean = false,
+    val entryText: String = ""
 )

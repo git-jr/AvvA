@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import android.transition.Fade
 import android.view.Window
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -23,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -80,8 +82,15 @@ class AssistantActivity : ComponentActivity() {
                             state = state,
                             onToggleUsePrintScreen = { viewModel.toggleUsePrintScreen() },
                             onSend = { prompt ->
-                                viewModel.getResponse(getString(R.string.handle_music_prompt, prompt))
+                                viewModel.getResponse(
+                                    getString(
+                                        R.string.handle_music_prompt,
+                                        prompt
+                                    )
+                                )
                             },
+                            onToggleListening = { viewModel.toggleListening() },
+                            onUpdateEntryText = { viewModel.updateEntryText(it) }
                         )
                     }
                 }

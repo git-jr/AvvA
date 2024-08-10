@@ -3,6 +3,7 @@ package com.paradoxo.avva.ui.assistant
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -14,9 +15,11 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -71,15 +74,17 @@ import com.paradoxo.avva.ui.components.ChatComponent
 import com.paradoxo.avva.ui.theme.AvvATheme
 import kotlinx.coroutines.delay
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun EntryScreen(
     state: AssistantUiState,
     onSend: (String) -> Unit = {},
+    defaultShowContent: Boolean = false,
     onToggleUsePrintScreen: () -> Unit = {},
-    defaultShowContent: Boolean = false
+    onToggleListening: () -> Unit = {},
+    onUpdateEntryText: (String) -> Unit = {}
 ) {
-    var editState by remember { mutableStateOf("") }
+
     var enableEdit by remember { mutableStateOf(true) }
     val interactionSource = remember { MutableInteractionSource() }
     var showLoading by remember { mutableStateOf(false) }
@@ -91,7 +96,7 @@ fun EntryScreen(
             enableEdit = false
         } else {
             Log.d("EntryScreen", "loadingResponse false: ${state.loadingResponse}")
-            editState = ""
+//            editState = ""
             showLoading = false
             enableEdit = true
         }
@@ -190,78 +195,138 @@ fun EntryScreen(
                         )
                     }
                     HorizontalDivider(color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f))
-                    Row(
-                        modifier = Modifier
-                            .padding(horizontal = 8.dp)
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceAround
-                    ) {
-                        BasicTextField(
-                            modifier = Modifier.weight(9f),
-                            value = editState,
-                            onValueChange = { editState = it },
-                            singleLine = false,
-                            enabled = enableEdit,
-                            maxLines = 2,
-                            interactionSource = interactionSource,
-                            cursorBrush = SolidColor(
-                                MaterialTheme.colorScheme.onBackground.copy(
-                                    alpha = 0.5f
-                                )
-                            ),
-                            textStyle = MaterialTheme.typography.displaySmall.copy(
-                                fontSize = 20.sp,
-                                color = MaterialTheme.colorScheme.onBackground
-                            ),
-                            decorationBox = @Composable { innerTextField ->
-                                TextFieldDefaults.DecorationBox(
-                                    value = editState,
-                                    innerTextField = innerTextField,
-                                    enabled = enableEdit,
-                                    singleLine = false,
-                                    visualTransformation = VisualTransformation.None,
-                                    interactionSource = interactionSource,
-                                    placeholder = {
-                                        Text(
-                                            stringResource(R.string.what_to_do),
-                                            style = MaterialTheme.typography.displaySmall.copy(
-                                                fontSize = 24.sp
-                                            ),
-                                            color = MaterialTheme.colorScheme.onBackground
-                                        )
-                                    },
-                                    colors = TextFieldDefaults.colors().copy(
-                                        unfocusedContainerColor = Color.Transparent,
-                                        focusedContainerColor = Color.Transparent,
-                                        cursorColor = MaterialTheme.colorScheme.onBackground.copy(
-                                            alpha = 0.5f
-                                        ),
-                                        focusedIndicatorColor = Color.Transparent,
-                                        unfocusedIndicatorColor = Color.Transparent,
-                                        disabledContainerColor = Color.Transparent,
-                                        disabledIndicatorColor = Color.Transparent
-                                    ),
-                                )
-                            }
-                        )
-
-                        IconButton(
-                            onClick = { onSend(editState) },
-                            modifier = Modifier
-                                .weight(1f)
-                        ) {
-                            Icon(
-                                Icons.AutoMirrored.Filled.Send,
-                                contentDescription = "Enviar",
-                                tint = MaterialTheme.colorScheme.onBackground,
-                            )
-                        }
-
-                    }
+                    EditText(
+                        state = state,
+                        enableEdit = enableEdit,
+                        interactionSource = interactionSource,
+                        onToggleListening = onToggleListening,
+                        onUpdateEntryText = onUpdateEntryText,
+                        onSend = onSend
+                    )
                 }
 
             }
+        }
+    }
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun EditText(
+    state: AssistantUiState,
+    enableEdit: Boolean,
+    interactionSource: MutableInteractionSource,
+    onUpdateEntryText: (String) -> Unit,
+    onToggleListening: () -> Unit,
+    onSend: (String) -> Unit
+) {
+
+    val localContext = LocalView.current.context
+    LaunchedEffect(state.isErrorListening) {
+        if (state.isErrorListening) {
+            Toast.makeText(
+                localContext,
+                localContext.getString(R.string.error_listening),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(end = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        BasicTextField(
+            modifier = Modifier.weight(9f),
+            value = state.entryText,
+            onValueChange = { onUpdateEntryText(it) },
+            singleLine = false,
+            enabled = enableEdit,
+            maxLines = 2,
+            interactionSource = interactionSource,
+            cursorBrush = SolidColor(
+                MaterialTheme.colorScheme.onBackground.copy(
+                    alpha = 0.5f
+                )
+            ),
+            textStyle = MaterialTheme.typography.displaySmall.copy(
+                fontSize = 20.sp,
+                color = MaterialTheme.colorScheme.onBackground
+            ),
+            decorationBox = @Composable { innerTextField ->
+                TextFieldDefaults.DecorationBox(
+                    value = state.entryText,
+                    innerTextField = innerTextField,
+                    enabled = enableEdit,
+                    singleLine = false,
+                    visualTransformation = VisualTransformation.None,
+                    interactionSource = interactionSource,
+                    placeholder = {
+                        Text(
+                            stringResource(R.string.what_to_do),
+                            style = MaterialTheme.typography.displaySmall.copy(
+                                fontSize = 18.sp
+                            ),
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    },
+                    colors = TextFieldDefaults.colors().copy(
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedContainerColor = Color.Transparent,
+                        cursorColor = MaterialTheme.colorScheme.onBackground.copy(
+                            alpha = 0.5f
+                        ),
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledContainerColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent
+                    ),
+                )
+            }
+        )
+
+        Box(
+            modifier = Modifier
+                .aspectRatio(1f)
+                .weight(1f),
+            contentAlignment = Alignment.Center
+        ) {
+            Crossfade(
+                targetState = state.entryText.isBlank(),
+                label = ""
+            ) { isMicButton ->
+                if (isMicButton) {
+                    IconButton(
+                        onClick = { onToggleListening() },
+                    ) {
+                        Icon(
+                            painterResource(if (state.isListening) R.drawable.ic_close else R.drawable.ic_mic),
+                            contentDescription = if (state.isListening) "Parar de ouvir" else "Ouvir",
+                            tint = MaterialTheme.colorScheme.onBackground,
+                        )
+                    }
+                } else {
+                    IconButton(
+                        onClick = {
+                            Toast.makeText(
+                                localContext,
+                                "Enviar: ${state.entryText}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    ) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.Send,
+                            contentDescription = "Enviar",
+                            tint = MaterialTheme.colorScheme.onBackground,
+                        )
+                    }
+                }
+            }
+
         }
     }
 }

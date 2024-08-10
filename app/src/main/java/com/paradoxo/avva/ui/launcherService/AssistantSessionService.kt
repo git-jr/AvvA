@@ -3,12 +3,10 @@ package com.paradoxo.avva.ui.launcherService
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.service.voice.VoiceInteractionSession
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat.startActivity
 import com.paradoxo.avva.ui.assistant.AssistantActivity
 import com.paradoxo.avva.util.BitmapUtil
@@ -43,11 +41,6 @@ class AssistantSessionService(private val context: Context?) : VoiceInteractionS
             startActivity(context, intent, null)
             finish()
         }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.Q)
-    override fun onHandleAssist(state: AssistState) {
-        super.onHandleAssist(state)
     }
 
     override fun onHandleScreenshot(screenshot: Bitmap?) {
