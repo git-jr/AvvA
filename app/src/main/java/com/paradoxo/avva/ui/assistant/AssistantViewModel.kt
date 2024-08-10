@@ -43,6 +43,11 @@ class AssistantViewModel @Inject constructor(
                 }
             }
         }
+
+        viewModelScope.launch {
+            delay(500)
+            toggleListening()
+        }
     }
 
     private fun loadPrintScreen() {
