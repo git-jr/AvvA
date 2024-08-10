@@ -11,5 +11,6 @@ data class AssistantUiState(
     val printScreen: Bitmap? = null,
     val isListening: Boolean = false,
     val isErrorListening: Boolean = false,
-    val entryText: String = ""
+    val entryText: String = "",
+    val enableEdit: Boolean = true,
 )

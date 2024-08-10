@@ -1,9 +1,11 @@
 package com.paradoxo.avva.util
 
+import android.Manifest
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
@@ -13,7 +15,7 @@ import java.util.Locale
 
 class PermissionUtils(private val context: Context) {
 
-    val isXiaomiDevice: Boolean
+    private val isXiaomiDevice: Boolean
         get() = "xiaomi" == Build.MANUFACTURER.lowercase(Locale.ROOT)
 
 
@@ -84,6 +86,10 @@ class PermissionUtils(private val context: Context) {
             }
         }
         return false
+    }
+
+    fun checkMicPermission(): Boolean {
+        return context.checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
     }
 
 }

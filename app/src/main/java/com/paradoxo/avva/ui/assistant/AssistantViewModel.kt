@@ -54,7 +54,7 @@ class AssistantViewModel @Inject constructor(
     }
 
     fun getResponse(prompt: String) {
-        _uiState.value = _uiState.value.copy(loadingResponse = true)
+        _uiState.value = _uiState.value.copy(loadingResponse = true, enableEdit = false)
         addMessage(Message(prompt, Status.USER))
 
         viewModelScope.launch {
@@ -87,7 +87,11 @@ class AssistantViewModel @Inject constructor(
             )
 
         }.invokeOnCompletion {
-            _uiState.value = _uiState.value.copy(loadingResponse = false)
+            _uiState.value = _uiState.value.copy(
+                loadingResponse = false,
+                entryText = "",
+                enableEdit = true
+            )
         }
     }
 

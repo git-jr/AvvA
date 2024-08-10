@@ -1,7 +1,9 @@
 package com.paradoxo.avva.ui.assistant
 
-import android.util.Log
+import android.Manifest
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
@@ -52,11 +54,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -66,13 +70,17 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import com.paradoxo.avva.R
 import com.paradoxo.avva.model.Action
 import com.paradoxo.avva.model.listActions
 import com.paradoxo.avva.model.sampleMessageList
 import com.paradoxo.avva.ui.components.ChatComponent
 import com.paradoxo.avva.ui.theme.AvvATheme
+import com.paradoxo.avva.util.PermissionUtils
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -84,21 +92,34 @@ fun EntryScreen(
     onToggleListening: () -> Unit = {},
     onUpdateEntryText: (String) -> Unit = {}
 ) {
-
-    var enableEdit by remember { mutableStateOf(true) }
     val interactionSource = remember { MutableInteractionSource() }
-    var showLoading by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val permissionUtils = remember { PermissionUtils(context) }
 
-    LaunchedEffect(state.loadingResponse) {
-        Log.d("EntryScreen", "loadingResponse true: ${state.loadingResponse}")
-        if (state.loadingResponse) {
-            showLoading = true
-            enableEdit = false
-        } else {
-            Log.d("EntryScreen", "loadingResponse false: ${state.loadingResponse}")
-//            editState = ""
-            showLoading = false
-            enableEdit = true
+    var micPermissionGranted by remember { mutableStateOf(false) }
+    var requestMicPermission by remember { mutableStateOf(false) }
+
+
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        micPermissionGranted = permissionUtils.checkMicPermission()
+    }
+
+    val scope = rememberCoroutineScope()
+    val requestPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        micPermissionGranted = isGranted
+        if (micPermissionGranted) {
+            onToggleListening()
+        }
+    }
+
+    if (requestMicPermission) {
+        LaunchedEffect(Unit) {
+            scope.launch {
+                delay(200)
+                requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+            }
         }
     }
 
@@ -153,7 +174,6 @@ fun EntryScreen(
                         }
                     }
 
-
                     Row(
                         modifier = Modifier
                             .padding(horizontal = 16.dp, vertical = 8.dp)
@@ -188,7 +208,7 @@ fun EntryScreen(
                 ChatComponent(state.chatList, Modifier.sizeIn(maxHeight = 300.dp))
 
                 Column {
-                    if (showLoading) {
+                    if (state.loadingResponse) {
                         LinearProgressIndicator(
                             modifier = Modifier.fillMaxWidth(),
                             color = MaterialTheme.colorScheme.onBackground
@@ -197,9 +217,15 @@ fun EntryScreen(
                     HorizontalDivider(color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f))
                     EditText(
                         state = state,
-                        enableEdit = enableEdit,
+                        enableEdit = state.enableEdit,
                         interactionSource = interactionSource,
-                        onToggleListening = onToggleListening,
+                        onToggleListening = {
+                            if (micPermissionGranted) {
+                                onToggleListening()
+                            } else {
+                                requestMicPermission = true
+                            }
+                        },
                         onUpdateEntryText = onUpdateEntryText,
                         onSend = onSend
                     )
@@ -254,6 +280,7 @@ private fun EditText(
             ),
             textStyle = MaterialTheme.typography.displaySmall.copy(
                 fontSize = 20.sp,
+                lineHeight = 20.sp,
                 color = MaterialTheme.colorScheme.onBackground
             ),
             decorationBox = @Composable { innerTextField ->
@@ -266,11 +293,14 @@ private fun EditText(
                     interactionSource = interactionSource,
                     placeholder = {
                         Text(
-                            stringResource(R.string.what_to_do),
+                            stringResource(if (state.isListening) R.string.listening else R.string.what_to_do),
                             style = MaterialTheme.typography.displaySmall.copy(
-                                fontSize = 18.sp
+                                fontSize = 18.sp,
+                                lineHeight = 18.sp,
                             ),
-                            color = MaterialTheme.colorScheme.onBackground
+                            color = MaterialTheme.colorScheme.onBackground.copy(
+                                alpha = 0.8f
+                            )
                         )
                     },
                     colors = TextFieldDefaults.colors().copy(
@@ -303,7 +333,7 @@ private fun EditText(
                         onClick = { onToggleListening() },
                     ) {
                         Icon(
-                            painterResource(if (state.isListening) R.drawable.ic_close else R.drawable.ic_mic),
+                            painterResource(if (state.isListening) R.drawable.ic_stop else R.drawable.ic_mic),
                             contentDescription = if (state.isListening) "Parar de ouvir" else "Ouvir",
                             tint = MaterialTheme.colorScheme.onBackground,
                         )
@@ -311,11 +341,7 @@ private fun EditText(
                 } else {
                     IconButton(
                         onClick = {
-                            Toast.makeText(
-                                localContext,
-                                "Enviar: ${state.entryText}",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            onSend(state.entryText)
                         }
                     ) {
                         Icon(

@@ -26,5 +26,6 @@
     <string name="allow_accessibility">Accessibility service (optional)</string>
     <string name="select_avva_accessibility">Select "\"AvvA Assistant"\" in "\"Downloaded Apps"\" to unlock responses with taps and gestures.</string>
     <string name="error_listening">I couldn\'t hear. Try again.</string>
+    <string name="listening">Listening…</string>
 
 </resources>
