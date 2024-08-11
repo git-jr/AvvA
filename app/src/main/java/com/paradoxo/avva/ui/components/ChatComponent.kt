@@ -1,7 +1,7 @@
 package com.paradoxo.avva.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,13 +15,14 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paradoxo.avva.model.Message
@@ -85,8 +86,7 @@ private fun ItemChatUser(message: Message) {
     MarkdownText(
         message.text,
         style = TextStyle(
-            color = MaterialTheme.colorScheme.onBackground,
-            textAlign = TextAlign.Justify,
+            color = MaterialTheme.colorScheme.onBackground
         ),
         modifier = Modifier
             .background(
@@ -100,14 +100,19 @@ private fun ItemChatUser(message: Message) {
 
 @Composable
 private fun ItemChatAI(message: Message) {
+    var copyText by remember { mutableStateOf<String?>(null) }
+    copyText?.let { ClipboardText(it) }
     MarkdownText(
         message.text,
         style = TextStyle(
             color = MaterialTheme.colorScheme.onBackground,
-            textAlign = TextAlign.Justify,
-        )
+        ),
+        modifier = Modifier.clickable {
+            copyText = message.text
+        }
     )
 }
+
 
 @Preview(
     showBackground = true,

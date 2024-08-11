@@ -21,7 +21,7 @@ val sampleMessageList = listOf(
     Message("My name is Laura", Status.USER),
     Message("What can you do?", Status.AI),
     Message("I can help you with your daily tasks", Status.USER),
-    Message("Can you tell me a joke?", Status.AI),
+    Message("Can you tell me a joke?Sure, why did the tomato turn red? Because it saw the salad dressing!Sure, why did the tomato turn red? Because it saw the salad dressing!Sure, why did the tomato turn red? Because it saw the salad dressing!Sure, why did the tomato turn red? Because it saw the salad dressing!Sure, why did the tomato turn red? Because it saw the salad dressing!Sure, why did the tomato turn red? Because it saw the salad dressing!Sure, why did the tomato turn red? Because it saw the salad dressing!Sure, why did the tomato turn red? Because it saw the salad dressing!Sure, why did the tomato turn red? Because it saw the salad dressing!Sure, why did the tomato turn red? Because it saw the salad dressing!", Status.AI),
     Message("Sure, why did the tomato turn red? Because it saw the salad dressing!", Status.USER),
     Message(markdownContent, Status.AI),
 )
