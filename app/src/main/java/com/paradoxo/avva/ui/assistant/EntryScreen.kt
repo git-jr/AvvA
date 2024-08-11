@@ -82,7 +82,6 @@ import com.paradoxo.avva.util.PermissionUtils
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-
 @Composable
 fun EntryScreen(
     state: AssistantUiState,
@@ -92,7 +91,6 @@ fun EntryScreen(
     onToggleListening: () -> Unit = {},
     onUpdateEntryText: (String) -> Unit = {}
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
     val context = LocalContext.current
     val permissionUtils = remember { PermissionUtils(context) }
 
@@ -215,6 +213,7 @@ fun EntryScreen(
                         )
                     }
                     HorizontalDivider(color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f))
+                    val interactionSource = remember { MutableInteractionSource() }
                     EditText(
                         state = state,
                         enableEdit = state.enableEdit,

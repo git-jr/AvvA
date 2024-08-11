@@ -83,10 +83,7 @@ class AssistantActivity : ComponentActivity() {
                             onToggleUsePrintScreen = { viewModel.toggleUsePrintScreen() },
                             onSend = { prompt ->
                                 viewModel.getResponse(
-                                    getString(
-                                        R.string.handle_music_prompt,
-                                        prompt
-                                    ),
+                                    getString(R.string.handle_music_prompt, prompt),
                                     prompt
                                 )
                             },

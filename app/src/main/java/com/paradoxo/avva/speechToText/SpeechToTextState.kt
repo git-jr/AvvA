@@ -5,5 +5,6 @@ data class SpeechToTextState(
     val isAvailable: Boolean = false,
     val isListening: Boolean = false,
     val error: Boolean = false,
-    val detected: Boolean = false
+    val notifyNothingListened: Boolean = false,
+    val detected: Boolean = false,
 )

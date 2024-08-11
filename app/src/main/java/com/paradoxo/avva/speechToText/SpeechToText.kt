@@ -21,10 +21,10 @@ class SpeechToText @Inject constructor(
     private val recognizer: SpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
 
     init {
-        checkIsAvailable()
+        checkIsAvailable(false)
     }
 
-    private fun checkIsAvailable(notify: Boolean = false) {
+    private fun checkIsAvailable(notify: Boolean) {
         val isAvailable = SpeechRecognizer.isRecognitionAvailable(context)
         Log.d("SpeechToText47", "no checkIsAvailable isAvailable é: $isAvailable")
         _state.update {
@@ -35,8 +35,8 @@ class SpeechToText @Inject constructor(
         }
     }
 
-    fun startListening() {
-        resetState()
+    fun startListening(notifyNothingListened: Boolean = false) {
+        resetState(notifyNothingListened)
 
         val isAvailable = SpeechRecognizer.isRecognitionAvailable(context)
         if (isAvailable) {
@@ -55,7 +55,7 @@ class SpeechToText @Inject constructor(
             _state.update { it.copy(isListening = true) }
         } else {
             Log.d("SpeechToText47", "startListening isAvailable é false")
-            checkIsAvailable(true)
+            checkIsAvailable(notifyNothingListened)
         }
     }
 
@@ -66,8 +66,14 @@ class SpeechToText @Inject constructor(
         _state.update { it.copy(isListening = false) }
     }
 
-    private fun resetState() {
-        _state.update { it.copy(text = "", error = false) }
+    private fun resetState(notifyNothingListened: Boolean) {
+        _state.update {
+            it.copy(
+                text = "",
+                error = false,
+                notifyNothingListened = notifyNothingListened
+            )
+        }
     }
 
     fun close() {
@@ -103,8 +109,10 @@ class SpeechToText @Inject constructor(
 
         Log.d("SpeechToText47", "onError: $errorMessage")
 
-        _state.update {
-            it.copy(error = true, isListening = false)
+        if (SpeechRecognizer.ERROR_CLIENT != error) {
+            _state.update {
+                it.copy(error = _state.value.notifyNothingListened, isListening = false)
+            }
         }
     }
 

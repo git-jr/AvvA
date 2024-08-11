@@ -46,7 +46,7 @@ class AssistantViewModel @Inject constructor(
 
         viewModelScope.launch {
             delay(500)
-            toggleListening()
+            toggleListening(false)
         }
     }
 
@@ -112,12 +112,12 @@ class AssistantViewModel @Inject constructor(
     }
 
 
-    fun toggleListening() {
+    fun toggleListening(notifyNothingListened: Boolean = false) {
         Log.e("SpeechToText47", "startListening chamado no viewmodel ${uiState.value.isListening}")
         if (uiState.value.isListening) {
             speechToText.stopListening()
         } else {
-            speechToText.startListening()
+            speechToText.startListening(notifyNothingListened)
         }
     }
 
