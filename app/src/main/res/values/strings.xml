@@ -8,11 +8,9 @@
     <string name="explain_screen">Explain screen</string>
     <string name="check_information">Check information</string>
     <string name="translate">Translate</string>
-    <string name="other_action">Other action</string>
     <string name="explain_screen_command">Explain the content of this screen.</string>
     <string name="check_information_command">Is the information on this screen correct?</string>
     <string name="translate_command">Translate the content of this screen.</string>
-    <string name="other_action_command">Other action</string>
 
     <string name="no_image_yet">No image available yet.</string>
     <string name="grant_permissions_avva_tittle">To use AvvA on any screen, grant these permissions</string>
@@ -30,7 +28,11 @@
     <string name="tutorial">Tutorial</string>
 
     <string name="handle_music_prompt">If the following prompt indicates a request to play, listen to, or reproduce a song, return a JSON in the format \'{findSound: song name}\'. Otherwise, respond normally by providing an informative and contextually relevant answer to the question. Prompt content: %1$s</string>
-    <string name="error_listening">I couldn\'t hear. Try again.</string>
+    <string name="error_listening">I could\'t hear. Try again.</string>
     <string name="listening">Listening…</string>
+    <string name="print_screen">Salve image</string>
+    <string name="stop_listening">Stop listening</string>
+    <string name="hear">Hear</string>
+    <string name="send">Send</string>
 
 </resources>

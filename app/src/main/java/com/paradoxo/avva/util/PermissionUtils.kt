@@ -21,12 +21,12 @@ class PermissionUtils(private val context: Context) {
 
     fun openOverlayPermission() {
         if (isXiaomiDevice) {
-            val intent = Intent("miui.intent.action.APP_PERM_EDITOR");
+            val intent = Intent("miui.intent.action.APP_PERM_EDITOR")
             intent.setClassName(
                 "com.miui.securitycenter",
                 "com.miui.permcenter.permissions.PermissionsEditorActivity"
-            );
-            intent.putExtra("extra_pkgname", context.packageName);
+            )
+            intent.putExtra("extra_pkgname", context.packageName)
 
             context.startActivity(intent)
         } else {

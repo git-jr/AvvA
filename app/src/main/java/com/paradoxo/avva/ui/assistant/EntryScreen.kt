@@ -333,7 +333,9 @@ private fun EditText(
                     ) {
                         Icon(
                             painterResource(if (isListening) R.drawable.ic_stop else R.drawable.ic_mic),
-                            contentDescription = if (isListening) "Parar de ouvir" else "Ouvir",
+                            contentDescription = if (isListening) stringResource(R.string.stop_listening) else stringResource(
+                                R.string.hear
+                            ),
                             tint = MaterialTheme.colorScheme.onBackground,
                             modifier = Modifier.background( MaterialTheme.colorScheme.background)
                         )
@@ -350,7 +352,7 @@ private fun EditText(
                     ) {
                         Icon(
                             Icons.AutoMirrored.Filled.Send,
-                            contentDescription = "Enviar",
+                            contentDescription = stringResource(R.string.send),
                             tint = MaterialTheme.colorScheme.onBackground,
                             modifier = Modifier.background( MaterialTheme.colorScheme.background)
                         )

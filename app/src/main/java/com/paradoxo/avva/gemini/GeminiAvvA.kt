@@ -3,7 +3,6 @@ package com.paradoxo.avva.gemini
 import android.graphics.Bitmap
 import com.google.ai.client.generativeai.Chat
 import com.google.ai.client.generativeai.GenerativeModel
-import com.google.ai.client.generativeai.type.GenerationConfig
 import com.google.ai.client.generativeai.type.content
 import com.google.ai.client.generativeai.type.generationConfig
 import com.paradoxo.avva.model.Message
@@ -32,26 +31,6 @@ class GeminiAvvA(
             generationConfig = config
         )
         chat = generativeModel.startChat()
-    }
-
-    suspend fun requestResponse(
-        prompt: String,
-        image: Bitmap? = null,
-        onSuccessful: (String) -> Unit,
-        onFailure: (String) -> Unit
-    ) {
-        try {
-            generativeModel.generateContent(
-                content {
-                    image?.let { image(it) }
-                    text(prompt)
-                }
-            ).let { response ->
-                response.text?.let(onSuccessful)
-            }
-        } catch (e: Exception) {
-            onFailure(e.message ?: "An error occurred")
-        }
     }
 
     suspend fun chatRequestResponse(

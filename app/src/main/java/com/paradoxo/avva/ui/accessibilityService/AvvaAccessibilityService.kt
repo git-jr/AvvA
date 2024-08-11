@@ -28,17 +28,6 @@ class AvvaAccessibilityService : AccessibilityService() {
         dispatchGesture(gestureDescription, null, null)
     }
 
-    fun clickLong(x: Int, y: Int) {
-
-        val path = Path()
-        path.moveTo(x.toFloat(), y.toFloat())
-        val builder = GestureDescription.Builder()
-        val gestureDescription = builder
-            .addStroke(GestureDescription.StrokeDescription(path, 10, 500))
-            .build()
-        dispatchGesture(gestureDescription, null, null)
-    }
-
     override fun onAccessibilityEvent(event: AccessibilityEvent) {}
 
     override fun onUnbind(intent: Intent?): Boolean {

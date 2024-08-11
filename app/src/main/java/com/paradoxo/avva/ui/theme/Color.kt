@@ -12,7 +12,5 @@ val Pink40 = Color(0xFF7D5260)
 
 
 val BeigeLight1 = Color(0xFFFDC48C)
-val BeigeLight2 = Color(0xFFFFDFC7)
 
 val BeigeDark1 = Color(0xFFAF6015)
-val BeigeDark2 = Color(0xFFE8AA75)

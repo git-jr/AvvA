@@ -88,26 +88,7 @@ class SpeechToText @Inject constructor(
 
 
     override fun onError(error: Int) {
-        val textByCode = when (error) {
-            SpeechRecognizer.ERROR_AUDIO -> "Erro de áudio"
-            SpeechRecognizer.ERROR_CLIENT -> "Erro de cliente"
-            SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS -> "Permissões insuficientes"
-            SpeechRecognizer.ERROR_NETWORK -> "Erro de rede"
-            SpeechRecognizer.ERROR_NETWORK_TIMEOUT -> "Tempo de rede esgotado"
-            SpeechRecognizer.ERROR_RECOGNIZER_BUSY -> "Reconhecedor ocupado"
-            SpeechRecognizer.ERROR_SERVER -> "Erro de servidor"
-            SpeechRecognizer.ERROR_SPEECH_TIMEOUT, SpeechRecognizer.ERROR_NO_MATCH -> "Nada detectado"
-            else -> "Erro desconhecido"
-        }
-
-        val errorMessage =
-            if (error == SpeechRecognizer.ERROR_SPEECH_TIMEOUT || error == SpeechRecognizer.ERROR_NO_MATCH) {
-                "Tente novamente. $textByCode"
-            } else {
-                "Tente novamente. Erro: $textByCode"
-            }
-
-        Log.d("SpeechToText47", "onError: $errorMessage")
+        Log.d("SpeechToText47", "onReadyForSpeech")
 
         if (SpeechRecognizer.ERROR_CLIENT != error) {
             _state.update {

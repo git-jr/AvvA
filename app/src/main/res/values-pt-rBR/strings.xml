@@ -9,11 +9,9 @@
     <string name="explain_screen">Explique a tela</string>
     <string name="check_information">Verificar info</string>
     <string name="translate">Traduzir</string>
-    <string name="other_action">Outra ação</string>
     <string name="explain_screen_command">Explique o conteúdo dessa tela</string>
     <string name="check_information_command">A informação dessa tela está correta?</string>
     <string name="translate_command">Traduza o conteúdo dessa tela</string>
-    <string name="other_action_command">Outra ação</string>
 
     <string name="no_image_yet">Nenhuma imagem disponível ainda.</string>
     <string name="grant_permissions_avva_tittle">Para usar AvvA em qualquer tela, ceda essas permissões</string>
@@ -33,4 +31,8 @@
     <string name="handle_music_prompt">Se o prompt a seguir indicar uma solicitação para tocar, ouvir ou reproduzir uma música, retorne um JSON no formato \'{findSound: nome da música}\'. Caso contrário, responda normalmente, fornecendo uma resposta informativa e relevante ao contexto da pergunta. Conteúdo do prompt: %1$s</string>
     <string name="error_listening">Não consegui ouvir. Tente novamente.</string>
     <string name="listening">Ouvindo…</string>
+    <string name="print_screen">Imagem salva"</string>
+    <string name="stop_listening">Parar de ouvir</string>
+    <string name="hear">Ouvir</string>
+    <string name="send">Enviar</string>
 </resources>

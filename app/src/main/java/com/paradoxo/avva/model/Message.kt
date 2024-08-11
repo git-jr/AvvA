@@ -8,8 +8,8 @@ data class Message(
 
 enum class Status { USER, AI }
 
-val markdownContent =
-    " \n# Sample \n* Markdown\n[Link de teste](https://example.com)\n<a href=\"https://www.google.com/\">Google</a>"
+const val markdownContent =
+    " \n# Sample \n* Markdown\n[Link de test](https://example.com)\n<a href=\"https://www.google.com/\">Google</a>"
 
 val sampleMessageList = listOf(
     Message("Hello", Status.AI),

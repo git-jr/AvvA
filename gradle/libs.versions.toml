@@ -1,5 +1,5 @@
 [versions]
-agp = "8.5.1"
+agp = "8.5.2"
 coil = "2.7.0"
 composeMarkdown = "0.5.2"
 generativeai = "0.9.0"

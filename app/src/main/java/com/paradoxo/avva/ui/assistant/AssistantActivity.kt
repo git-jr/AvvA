@@ -5,7 +5,6 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import android.transition.Fade
 import android.view.Window
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -24,7 +23,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -87,7 +85,7 @@ class AssistantActivity : ComponentActivity() {
                                     prompt
                                 )
                             },
-                            onToggleListening = { viewModel.toggleListening() },
+                            onToggleListening = { viewModel.toggleListening(true) },
                             onUpdateEntryText = { viewModel.updateEntryText(it) }
                         )
                     }
@@ -123,7 +121,7 @@ fun PrintScreen(imageBitmap: Bitmap) {
             modifier = Modifier.fillMaxSize(),
             bitmap = imageBitmap
                 .asImageBitmap(),
-            contentDescription = "Imagem salva",
+            contentDescription = stringResource(R.string.print_screen),
             contentScale = ContentScale.Crop
         )
 

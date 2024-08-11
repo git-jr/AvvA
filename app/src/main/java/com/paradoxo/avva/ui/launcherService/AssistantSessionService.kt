@@ -11,9 +11,6 @@ import androidx.core.content.ContextCompat.startActivity
 import com.paradoxo.avva.ui.assistant.AssistantActivity
 import com.paradoxo.avva.util.BitmapUtil
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 
 
 class AssistantSessionService(private val context: Context?) : VoiceInteractionSession(context) {
@@ -21,11 +18,6 @@ class AssistantSessionService(private val context: Context?) : VoiceInteractionS
     private lateinit var handler: Handler
 
     private val job = Job()
-
-    private val _uiState = MutableStateFlow(UiState())
-    val uiState: StateFlow<UiState>
-        get() = _uiState.asStateFlow()
-
 
     override fun onCreate() {
         super.onCreate()
@@ -61,8 +53,3 @@ class AssistantSessionService(private val context: Context?) : VoiceInteractionS
         job.cancel()
     }
 }
-
-
-data class UiState(
-    val text: String = "Teste"
-)
