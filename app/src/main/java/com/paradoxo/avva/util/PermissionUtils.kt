@@ -63,7 +63,7 @@ class PermissionUtils(private val context: Context) {
                 return applicationLabel.contains("avva", ignoreCase = true)
             }
         } catch (e: Exception) {
-            Log.e("VoiceAssistant", "Error fetching voice assistant: ", e)
+            Log.e("VoiceAssistant", "Error fetching voice assistant:")
             return false
         }
         return false

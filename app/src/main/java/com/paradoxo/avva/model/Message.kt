@@ -6,11 +6,10 @@ data class Message(
     val image: String = ""
 )
 
-enum class Status {
-    LOAD, USER, AI
-}
+enum class Status { USER, AI }
 
-val markdownContent = " \n# Sample \n* Markdown\n[Link de teste](https://example.com)\n<a href=\"https://www.google.com/\">Google</a>"
+val markdownContent =
+    " \n# Sample \n* Markdown\n[Link de teste](https://example.com)\n<a href=\"https://www.google.com/\">Google</a>"
 
 val sampleMessageList = listOf(
     Message("Hello", Status.AI),
@@ -21,7 +20,10 @@ val sampleMessageList = listOf(
     Message("My name is Laura", Status.USER),
     Message("What can you do?", Status.AI),
     Message("I can help you with your daily tasks", Status.USER),
-    Message("Can you tell me a joke?Sure, why did the tomato turn red? Because it saw the salad dressing!Sure, why did the tomato turn red? Because it saw the salad dressing!Sure, why did the tomato turn red? Because it saw the salad dressing!Sure, why did the tomato turn red? Because it saw the salad dressing!Sure, why did the tomato turn red? Because it saw the salad dressing!Sure, why did the tomato turn red? Because it saw the salad dressing!Sure, why did the tomato turn red? Because it saw the salad dressing!Sure, why did the tomato turn red? Because it saw the salad dressing!Sure, why did the tomato turn red? Because it saw the salad dressing!Sure, why did the tomato turn red? Because it saw the salad dressing!", Status.AI),
+    Message(
+        "Can you tell me a joke?Sure, why did the tomato turn red? Because it saw the salad dressing!Sure, why did the tomato turn red? Because it saw the salad dressing!Sure, why did the tomato turn red? Because it saw the salad dressing!Sure, why did the tomato turn red? Because it saw the salad dressing!Sure, why did the tomato turn red? Because it saw the salad dressing!Sure, why did the tomato turn red? Because it saw the salad dressing!Sure, why did the tomato turn red? Because it saw the salad dressing!Sure, why did the tomato turn red? Because it saw the salad dressing!Sure, why did the tomato turn red? Because it saw the salad dressing!Sure, why did the tomato turn red? Because it saw the salad dressing!",
+        Status.AI
+    ),
     Message("Sure, why did the tomato turn red? Because it saw the salad dressing!", Status.USER),
     Message(markdownContent, Status.AI),
 )

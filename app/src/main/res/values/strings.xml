@@ -29,7 +29,7 @@
     <string name="chat_test">Chat Test</string>
     <string name="tutorial">Tutorial</string>
 
-    <string name="handle_music_prompt">If the following prompt indicates a request to play, listen to, or reproduce a song, return a JSON in the format \'{findSound: "\"song name"\"}\'. Otherwise, respond normally by providing an informative and contextually relevant answer to the question. Prompt content: %1$s</string>
+    <string name="handle_music_prompt">If the following prompt indicates a request to play, listen to, or reproduce a song, return a JSON in the format \'{findSound: song name}\'. Otherwise, respond normally by providing an informative and contextually relevant answer to the question. Prompt content: %1$s</string>
     <string name="error_listening">I couldn\'t hear. Try again.</string>
     <string name="listening">Listening…</string>
 

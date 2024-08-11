@@ -69,8 +69,8 @@ class AssistantViewModel @Inject constructor(
                 image = if (_uiState.value.usePrintScreen) _uiState.value.printScreen else null,
                 onSuccessful = { response ->
                     if (response.contains("findSound:")) {
-                        val musicName =
-                            response.substringAfter("findSound:").substringBefore("}").replace("\"", "").trim()
+                        val musicName = response.substringAfter("findSound:").substringBefore("}")
+                        Log.d("AssistantViewModelResponse", "music name: $musicName")
                         actionHandler.playYTMusic(musicName) {
                             Log.d("AssistantViewModel", "Music playing")
                             viewModelScope.launch {
@@ -80,9 +80,10 @@ class AssistantViewModel @Inject constructor(
                         }
 
                         return@chatRequestResponse
+                    } else {
+                        addMessage(Message(response, Status.AI))
                     }
                     Log.d("AssistantViewModelResponse", "Response: $response")
-                    addMessage(Message(response, Status.AI))
                 },
                 onFailure = {
                     Log.e("AssistantViewModelResponse", "Error: $it")
