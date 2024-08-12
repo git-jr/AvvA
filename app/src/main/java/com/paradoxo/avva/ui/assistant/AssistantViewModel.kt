@@ -5,9 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.paradoxo.avva.gemini.GeminiAvvA
 import com.paradoxo.avva.model.Message
-import com.paradoxo.avva.model.Status
+import com.paradoxo.avva.model.Author
 import com.paradoxo.avva.speechToText.SpeechToText
-import com.paradoxo.avva.ui.accessibilityService.clickAccessibilityService
+import com.paradoxo.avva.service.accessibilityService.clickAccessibilityService
 import com.paradoxo.avva.util.ActionHandler
 import com.paradoxo.avva.util.BitmapUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -60,7 +60,7 @@ class AssistantViewModel @Inject constructor(
 
     fun getResponse(searchPrompt: String, rawPrompt: String) {
         _uiState.value = _uiState.value.copy(loadingResponse = true, enableEdit = false)
-        addMessage(Message(rawPrompt, Status.USER))
+        addMessage(Message(rawPrompt, Author.USER))
 
         viewModelScope.launch {
             gemini.chatRequestResponse(
@@ -81,13 +81,13 @@ class AssistantViewModel @Inject constructor(
 
                         return@chatRequestResponse
                     } else {
-                        addMessage(Message(response, Status.AI))
+                        addMessage(Message(response, Author.AI))
                     }
                     Log.d("AssistantViewModelResponse", "Response: $response")
                 },
                 onFailure = {
                     Log.e("AssistantViewModelResponse", "Error: $it")
-                    addMessage(Message("An error occurred", Status.AI))
+                    addMessage(Message("An error occurred", Author.AI))
                 }
             )
 
@@ -130,5 +130,3 @@ class AssistantViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(entryText = text)
     }
 }
-
-

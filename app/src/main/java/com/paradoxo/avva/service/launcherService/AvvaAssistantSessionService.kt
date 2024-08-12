@@ -1,4 +1,4 @@
-package com.paradoxo.avva.ui.launcherService
+package com.paradoxo.avva.service.launcherService
 
 import android.os.Bundle
 import android.service.voice.VoiceInteractionSession

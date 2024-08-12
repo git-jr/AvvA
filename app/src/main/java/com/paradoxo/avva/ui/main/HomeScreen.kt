@@ -1,15 +1,5 @@
-package com.paradoxo.avva
+package com.paradoxo.avva.ui.main
 
-import android.app.Activity
-import android.app.ActivityOptions
-import android.content.Intent
-import android.net.Uri
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,77 +16,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.paradoxo.avva.ui.assistant.AssistantActivity
-import com.paradoxo.avva.ui.launcherService.AvvaVoiceInteractionService
+import com.paradoxo.avva.R
 import com.paradoxo.avva.ui.permissions.PermissionScreen
 import com.paradoxo.avva.ui.theme.AvvATheme
-import dagger.hilt.android.AndroidEntryPoint
-
-@AndroidEntryPoint
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        startInteractionService()
-        enableEdgeToEdge()
-
-//        startActivity(Intent(this, AssistantActivity::class.java))
-
-        setContent {
-            WindowInsetsSetup()
-            AvvATheme {
-                MainScreen(
-                    openTutorial = {
-                        openTutorial()
-                    },
-                    openAssistantActivity = {
-                        openAssistantActivity()
-                    }
-                )
-            }
-        }
-    }
-
-    @Composable
-    private fun WindowInsetsSetup() {
-        val view = LocalView.current
-        val window = (view.context as Activity).window
-        window.navigationBarColor = MaterialTheme.colorScheme.background.copy(0.2f).toArgb()
-    }
-
-    private fun startInteractionService() {
-        val voiceServiceIntent = Intent(this, AvvaVoiceInteractionService::class.java)
-        voiceServiceIntent.setAction(Intent.ACTION_ASSIST)
-
-        Handler(Looper.getMainLooper()).postDelayed({
-            startService(voiceServiceIntent)
-        }, 1000)
-    }
-
-
-    private fun openAssistantActivity() {
-        val intent = Intent(this, AssistantActivity::class.java)
-        startActivity(
-            intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle()
-        )
-    }
-
-    private fun openTutorial() {
-        val intent = Intent(Intent.ACTION_VIEW)
-        intent.data = Uri.parse("https://paradoxo.tech/avva")
-        startActivity(intent)
-    }
-
-}
 
 
 @Composable
-private fun MainScreen(
+fun HomeScreen(
     openTutorial: () -> Unit = {},
     openAssistantActivity: () -> Unit = {}
 ) {
@@ -143,8 +72,8 @@ private fun MainScreen(
 
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
-fun MainScreenPreview() {
+fun HomeScreenPreview() {
     AvvATheme {
-        MainScreen()
+        HomeScreen()
     }
 }

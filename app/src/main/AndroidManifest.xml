@@ -21,7 +21,7 @@
         android:theme="@style/Theme.AvvATransparent"
         tools:targetApi="31">
         <activity
-            android:name=".ui.assistant.AssistantActivity"
+            android:name=".ui.AssistantActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
 
@@ -34,7 +34,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -45,7 +45,7 @@
         </activity>
 
         <service
-            android:name=".ui.accessibilityService.AvvaAccessibilityService"
+            android:name=".service.accessibilityService.AvvaAccessibilityService"
             android:exported="true"
             android:label="@string/accessibility_service_label"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
@@ -58,7 +58,7 @@
                 android:resource="@xml/accessibility_service_config" />
         </service>
         <service
-            android:name=".ui.launcherService.AvvaVoiceInteractionService"
+            android:name=".service.launcherService.AvvaVoiceInteractionService"
             android:exported="true"
             android:permission="android.permission.BIND_VOICE_INTERACTION">
             <intent-filter>
@@ -70,7 +70,7 @@
                 android:resource="@xml/assist_metadata" />
         </service>
         <service
-            android:name=".ui.launcherService.AvvaAssistantSessionService"
+            android:name=".service.launcherService.AvvaAssistantSessionService"
             android:permission="android.permission.BIND_VOICE_INTERACTION" />
     </application>
 

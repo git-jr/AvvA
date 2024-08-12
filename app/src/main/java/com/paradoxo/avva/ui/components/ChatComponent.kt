@@ -26,7 +26,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.paradoxo.avva.model.Message
-import com.paradoxo.avva.model.Status
+import com.paradoxo.avva.model.Author
 import com.paradoxo.avva.model.sampleMessageList
 import com.paradoxo.avva.ui.theme.AvvATheme
 import dev.jeziellago.compose.markdowntext.MarkdownText
@@ -45,8 +45,8 @@ fun ChatComponent(
         reverseLayout = true
     ) {
         items(chatList.reversed()) { message ->
-            val isUser = Status.USER == message.status
-            val isAI = Status.AI == message.status
+            val isUser = Author.USER == message.author
+            val isAI = Author.AI == message.author
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

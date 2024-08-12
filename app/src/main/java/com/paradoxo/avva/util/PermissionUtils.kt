@@ -27,6 +27,7 @@ class PermissionUtils(private val context: Context) {
                 "com.miui.permcenter.permissions.PermissionsEditorActivity"
             )
             intent.putExtra("extra_pkgname", context.packageName)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
 
             context.startActivity(intent)
         } else {
@@ -41,11 +42,13 @@ class PermissionUtils(private val context: Context) {
 
     fun openAssistantSettings() {
         val intent = Intent(Settings.ACTION_VOICE_INPUT_SETTINGS)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         context.startActivity(intent)
     }
 
     fun openAccessibilitySettings() {
         val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         context.startActivity(intent)
     }
 

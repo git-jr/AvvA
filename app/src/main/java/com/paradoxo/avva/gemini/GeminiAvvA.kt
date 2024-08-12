@@ -6,7 +6,7 @@ import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.content
 import com.google.ai.client.generativeai.type.generationConfig
 import com.paradoxo.avva.model.Message
-import com.paradoxo.avva.model.Status
+import com.paradoxo.avva.model.Author
 
 const val MODEL_NAME: String = "gemini-1.5-flash"
 
@@ -43,7 +43,7 @@ class GeminiAvvA(
         try {
             val chat = generativeModel.startChat(
                 history = history.map {
-                    content(role = if (it.status == Status.AI) "model" else "user") { text(it.text) }
+                    content(role = if (it.author == Author.AI) "model" else "user") { text(it.text) }
                 }
             )
 

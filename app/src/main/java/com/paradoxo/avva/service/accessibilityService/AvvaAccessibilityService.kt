@@ -1,4 +1,4 @@
-package com.paradoxo.avva.ui.accessibilityService
+package com.paradoxo.avva.service.accessibilityService
 
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.GestureDescription

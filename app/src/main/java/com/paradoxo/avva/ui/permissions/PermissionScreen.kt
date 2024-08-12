@@ -27,6 +27,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,34 +35,27 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.paradoxo.avva.R
 import com.paradoxo.avva.ui.components.AvvAFace
 import com.paradoxo.avva.ui.theme.AvvATheme
-import com.paradoxo.avva.util.PermissionUtils
-
 
 @Composable
 fun PermissionScreen(modifier: Modifier = Modifier) {
-
-    val context = LocalContext.current
-    val permissionUtils = remember { PermissionUtils(context) }
-
-    var overlayIsAllowed by remember { mutableStateOf(permissionUtils.checkOverlayPermission()) }
-    var avvaIsDefaultAssistant by remember { mutableStateOf(permissionUtils.checkVoiceAssistantIsAvva()) }
-    var avvaIsAccessibility by remember { mutableStateOf(permissionUtils.checkAccessibilityPermission()) }
+    val viewModel = hiltViewModel<PermissionViewModel>()
+    val state: PermissionUiState by viewModel.uiState.collectAsState()
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
-        overlayIsAllowed = permissionUtils.checkOverlayPermission()
-        avvaIsDefaultAssistant = permissionUtils.checkVoiceAssistantIsAvva()
-        avvaIsAccessibility = permissionUtils.checkAccessibilityPermission()
+        viewModel.checkOverlayPermission()
+        viewModel.checkVoiceAssistantIsAvva()
+        viewModel.checkAccessibilityPermission()
     }
 
 
@@ -120,28 +114,25 @@ fun PermissionScreen(modifier: Modifier = Modifier) {
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // 1 - Overlay screen permission
                 ContainerPermissionName(
-                    isAllowed = overlayIsAllowed,
+                    isAllowed = state.overlayIsAllowed,
                     title = R.string.allow_screen_overlay,
                     description = R.string.allow_app_overlay,
-                    onClick = { permissionUtils.openOverlayPermission() },
+                    onClick = { viewModel.openOverlayPermission() },
                 )
 
-                // 2 - Default assistant permission
                 ContainerPermissionName(
-                    isAllowed = avvaIsDefaultAssistant,
+                    isAllowed = state.avvaIsDefaultAssistant,
                     title = R.string.select_avva_default_assistant,
                     description = R.string.select_avva_assistant_app,
-                    onClick = { permissionUtils.openAssistantSettings() },
+                    onClick = { viewModel.openAssistantSettings() },
                 )
 
-                // 3 - Accessibility permission
                 ContainerPermissionName(
-                    isAllowed = avvaIsAccessibility,
+                    isAllowed = state.avvaIsAccessibility,
                     title = R.string.allow_accessibility,
                     description = R.string.select_avva_accessibility,
-                    onClick = { permissionUtils.openAccessibilitySettings() },
+                    onClick = { viewModel.openAccessibilitySettings() },
                 )
 
             }
@@ -152,7 +143,7 @@ fun PermissionScreen(modifier: Modifier = Modifier) {
 
 
 @Composable
-fun ContainerPermissionName(
+private fun ContainerPermissionName(
     modifier: Modifier = Modifier,
     title: Int,
     description: Int,

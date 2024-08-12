@@ -1,4 +1,4 @@
-package com.paradoxo.avva.ui.assistant
+package com.paradoxo.avva.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.paradoxo.avva.ui.components.AvvAFace
 
 @Composable
 fun BackgroundScreen(
@@ -50,6 +49,6 @@ fun BackgroundScreen(
 
 @Preview(showSystemUi = false, showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
-private fun OptionsScreenPreview() {
+private fun BackgroundScreenPreview() {
     BackgroundScreen()
 }

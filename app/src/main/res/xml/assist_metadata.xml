@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <voice-interaction-service
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:sessionService="com.paradoxo.avva.ui.launcherService.AvvaAssistantSessionService"
-    android:recognitionService="com.paradoxo.avva.ui.launcherService.AvvaVoiceInteractionService"
+    android:sessionService="com.paradoxo.avva.service.launcherService.AvvaAssistantSessionService"
+    android:recognitionService="com.paradoxo.avva.service.launcherService.AvvaVoiceInteractionService"
     android:supportsAssist="true"
 />

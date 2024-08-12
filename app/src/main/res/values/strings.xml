@@ -34,5 +34,6 @@
     <string name="stop_listening">Stop listening</string>
     <string name="hear">Hear</string>
     <string name="send">Send</string>
+    <string name="text_copied">Text copied</string>
 
 </resources>

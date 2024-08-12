@@ -2,28 +2,25 @@ package com.paradoxo.avva.model
 
 data class Message(
     val text: String = "",
-    val status: Status = Status.AI,
+    val author: Author = Author.AI,
     val image: String = ""
 )
 
-enum class Status { USER, AI }
+enum class Author { USER, AI }
 
 const val markdownContent =
     " \n# Sample \n* Markdown\n[Link de test](https://example.com)\n<a href=\"https://www.google.com/\">Google</a>"
 
 val sampleMessageList = listOf(
-    Message("Hello", Status.AI),
-    Message("Hi", Status.USER),
-    Message("How are you?", Status.AI),
-    Message("I'm fine, thank you", Status.USER),
-    Message("What's your name?", Status.AI),
-    Message("My name is Laura", Status.USER),
-    Message("What can you do?", Status.AI),
-    Message("I can help you with your daily tasks", Status.USER),
-    Message(
-        "Can you tell me a joke?Sure, why did the tomato turn red? Because it saw the salad dressing!Sure, why did the tomato turn red? Because it saw the salad dressing!Sure, why did the tomato turn red? Because it saw the salad dressing!Sure, why did the tomato turn red? Because it saw the salad dressing!Sure, why did the tomato turn red? Because it saw the salad dressing!Sure, why did the tomato turn red? Because it saw the salad dressing!Sure, why did the tomato turn red? Because it saw the salad dressing!Sure, why did the tomato turn red? Because it saw the salad dressing!Sure, why did the tomato turn red? Because it saw the salad dressing!Sure, why did the tomato turn red? Because it saw the salad dressing!",
-        Status.AI
-    ),
-    Message("Sure, why did the tomato turn red? Because it saw the salad dressing!", Status.USER),
-    Message(markdownContent, Status.AI),
+    Message("Hello", Author.AI),
+    Message("Hi", Author.USER),
+    Message("How are you?", Author.AI),
+    Message("I'm fine, thank you", Author.USER),
+    Message("What's your name?", Author.AI),
+    Message("My name is Lorem", Author.USER),
+    Message("What can you do?", Author.AI),
+    Message("I can help you with your daily tasks", Author.USER),
+    Message("Sure, why did the tomato turn red? Because it saw the salad dressing!", Author.USER),
+    Message(author = Author.AI, text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."),
+    Message(markdownContent, Author.AI),
 )

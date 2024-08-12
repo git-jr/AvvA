@@ -35,4 +35,5 @@
     <string name="stop_listening">Parar de ouvir</string>
     <string name="hear">Ouvir</string>
     <string name="send">Enviar</string>
+    <string name="text_copied">Texto copiado</string>
 </resources>
