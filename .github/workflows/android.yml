@@ -25,6 +25,8 @@ jobs:
   build_debug_apk:
     name: Build App Debug APK
     runs-on: ubuntu-latest
+    env:
+      LOCAL_PROPS_FILE: ${{ secrets.LOCAL_PROPS_FILE }}
 
     steps:
       - name: Check out repository
@@ -42,6 +44,9 @@ jobs:
 
       - name: Validate Gradle wrapper
         uses: gradle/actions/wrapper-validation@v4
+
+      - name: Create local.properties 
+        run: echo "$LOCAL_PROPS_FILE" > local.properties
       
       - name: Build with Gradle
         id: gradle_build_debug
