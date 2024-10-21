@@ -34,8 +34,10 @@ class PermissionUtils(private val context: Context) {
 
             val overlaySettings = Intent(
                 Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                Uri.parse("package:${context.packageName}")
-            )
+                Uri.parse("package:${context.packageName}"),
+
+                )
+            overlaySettings.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             context.startActivity(overlaySettings)
         }
     }

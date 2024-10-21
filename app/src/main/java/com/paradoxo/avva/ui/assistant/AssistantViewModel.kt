@@ -68,8 +68,10 @@ class AssistantViewModel @Inject constructor(
                 history = _uiState.value.chatList,
                 image = if (_uiState.value.usePrintScreen) _uiState.value.printScreen else null,
                 onSuccessful = { response ->
-                    if (response.contains("findSound:")) {
-                        val musicName = response.substringAfter("findSound:").substringBefore("}")
+                    if (response.contains("findSound")) {
+                        val musicName = response.substringAfter("findSound").substringBefore("}")
+                            .replace(":", "")
+                            .replace("\"", "")
                         Log.d("AssistantViewModelResponse", "music name: $musicName")
                         actionHandler.playYTMusic(musicName) {
                             Log.d("AssistantViewModel", "Music playing")
