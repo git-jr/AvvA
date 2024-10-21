@@ -18,11 +18,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -35,6 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -61,7 +67,8 @@ fun PermissionScreen(modifier: Modifier = Modifier) {
 
     Column(
         modifier = modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
@@ -132,12 +139,44 @@ fun PermissionScreen(modifier: Modifier = Modifier) {
                     isAllowed = state.avvaIsAccessibility,
                     title = R.string.allow_accessibility,
                     description = R.string.select_avva_accessibility,
-                    onClick = { viewModel.openAccessibilitySettings() },
+                    onClick = { viewModel.showAccessibilityDialog(true) },
                 )
 
             }
         }
         Spacer(modifier = Modifier.size(36.dp))
+    }
+
+    if (state.showDialogAccessibility) {
+        AlertDialog(
+            onDismissRequest = {
+                viewModel.showAccessibilityDialog(false)
+            },
+            title = { Text(text = stringResource(R.string.accessibility_permission)) },
+            text = { Text(stringResource(R.string.accessibility_permission_description)) },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        viewModel.showAccessibilityDialog(false)
+                        viewModel.openAccessibilitySettings()
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.onBackground)
+                ) {
+                    Text(stringResource(R.string.accept))
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = { viewModel.showAccessibilityDialog(false) },
+                    colors = ButtonDefaults.buttonColors(
+                        contentColor = MaterialTheme.colorScheme.onBackground,
+                        containerColor = Color.Transparent
+                    )
+                ) {
+                    Text(stringResource(R.string.decline))
+                }
+            }
+        )
     }
 }
 

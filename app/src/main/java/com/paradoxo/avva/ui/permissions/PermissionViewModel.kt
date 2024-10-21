@@ -60,4 +60,10 @@ class PermissionViewModel @Inject constructor(
         permissionUtils.openAccessibilitySettings()
     }
 
+    fun showAccessibilityDialog(show: Boolean) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(showDialogAccessibility = show) }
+        }
+    }
+
 }

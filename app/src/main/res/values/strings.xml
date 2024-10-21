@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">AvvA</string>
     <string name="accessibility_service_label">AvvA Assistant</string>
     <string name="accessibility_service_description">Allows the AvvA to interact with other apps through taps and gestures.</string>
@@ -24,6 +24,15 @@
     <string name="allow_accessibility">Accessibility service (optional)</string>
     <string name="select_avva_accessibility">Select "\"AvvA Assistant"\" in "\"Downloaded Apps"\" to unlock responses with taps and gestures.</string>
 
+    <string name="accessibility_permission">Accessibility Permission</string>
+    <string name="accessibility_permission_description">
+        AvvA requires access to the Accessibility API to perform automated actions, such as opening apps and playing music as configured by you. These actions will only be performed with your explicit permission.
+        <xliff:g id="newline">\n\n</xliff:g>
+        The use of this permission allows AvvA to execute programmed taps, which you have pre-configured, to make navigation and device use easier.
+        This access does not change any device settings without your authorization and can be disabled at any time in the device’s accessibility settings.
+        Please choose whether you wish to allow the use of the Accessibility API for these functions:
+    </string>
+
     <string name="chat_test">Chat Test</string>
     <string name="tutorial">Tutorial</string>
 
@@ -35,5 +44,8 @@
     <string name="hear">Hear</string>
     <string name="send">Send</string>
     <string name="text_copied">Text copied</string>
+
+    <string name="accept">Accept</string>
+    <string name="decline">Decline</string>
 
 </resources>
