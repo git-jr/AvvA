@@ -14,8 +14,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -42,7 +40,7 @@ class MainActivity : ComponentActivity() {
 
                 if (state.showSettingsScreen) {
                     SettingsScreen(
-                        onSubmit = {
+                        onGoToHome = {
                             viewModel.showSettingsScreen(false)
                         },
                         onDismiss = {

@@ -3,6 +3,7 @@ package com.paradoxo.avva.ui.assistant
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.paradoxo.avva.dataStore.UserPreferencesDataStore
 import com.paradoxo.avva.gemini.GeminiAvvA
 import com.paradoxo.avva.model.Message
 import com.paradoxo.avva.model.Author
@@ -23,11 +24,11 @@ class AssistantViewModel @Inject constructor(
     private val gemini: GeminiAvvA,
     private val bitmapUtil: BitmapUtil,
     private val actionHandler: ActionHandler,
-    private val speechToText: SpeechToText
+    private val speechToText: SpeechToText,
+    private val dataStore: UserPreferencesDataStore
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AssistantUiState())
-
     var uiState = _uiState.asStateFlow()
 
     init {
@@ -47,6 +48,18 @@ class AssistantViewModel @Inject constructor(
         viewModelScope.launch {
             delay(500)
             toggleListening(false)
+        }
+
+        checkUseCustomApiKey()
+    }
+
+    private fun checkUseCustomApiKey() {
+        viewModelScope.launch {
+            dataStore.getApiKey().collect {
+                if (it.isNotEmpty()) {
+                    gemini.setCustomApiKey(it)
+                }
+            }
         }
     }
 

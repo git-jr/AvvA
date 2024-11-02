@@ -11,7 +11,7 @@ import com.paradoxo.avva.model.Author
 const val MODEL_NAME: String = "gemini-1.5-flash"
 
 class GeminiAvvA(
-    private val apiKey: String
+    private var apiKey: String
 ) {
     private lateinit var generativeModel: GenerativeModel
     private lateinit var chat: Chat
@@ -20,14 +20,14 @@ class GeminiAvvA(
         loadModel()
     }
 
-    private fun loadModel() {
+    private fun loadModel(customKey: String = apiKey) {
         val config = generationConfig {
             temperature = 0.9f
         }
 
         generativeModel = GenerativeModel(
             modelName = MODEL_NAME,
-            apiKey = apiKey,
+            apiKey = customKey,
             generationConfig = config
         )
         chat = generativeModel.startChat()
@@ -58,5 +58,9 @@ class GeminiAvvA(
         } catch (e: Exception) {
             onFailure(e.message ?: "An error occurred")
         }
+    }
+
+    fun setCustomApiKey(key: String) {
+        loadModel(key)
     }
 }

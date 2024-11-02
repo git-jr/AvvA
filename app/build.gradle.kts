@@ -80,10 +80,11 @@ dependencies {
     ksp(libs.hilt.compiler)
 
 
-
     implementation(libs.generativeai)
     implementation(libs.coil)
     implementation(libs.compose.markdown)
+
+    implementation(libs.datastore)
 }
 java {
     toolchain {

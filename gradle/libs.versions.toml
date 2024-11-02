@@ -20,6 +20,8 @@ hilt-android = "2.51.1"
 hilt-navigation-compose = "1.2.0"
 secretsGradlePlugin = "2.0.1"
 
+datastore = "1.1.1"
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 coil = { module = "io.coil-kt:coil", version.ref = "coil" }
@@ -44,6 +46,7 @@ viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose",
 dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "dagger-compiler" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt-android" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "dagger-compiler" }
+datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt-navigation-compose" }
 androidx-lifecycle-runtime-compose-android = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose-android", version.ref = "lifecycleRuntimeKtx" }
 

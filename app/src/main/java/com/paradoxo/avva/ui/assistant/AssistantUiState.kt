@@ -6,7 +6,7 @@ import com.paradoxo.avva.model.Message
 
 data class AssistantUiState(
     val chatList: List<Message> = emptyList(),
-    val usePrintScreen: Boolean = true,
+    val usePrintScreen: Boolean = false,
     val loadingResponse: Boolean = false,
     val printScreen: Bitmap? = null,
     val isListening: Boolean = false,

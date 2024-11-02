@@ -31,11 +31,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -54,14 +52,21 @@ import com.paradoxo.avva.R
 @Composable
 fun SettingsScreen(
     onDismiss: () -> Unit,
-    onSubmit: (String) -> Unit
+    onGoToHome: () -> Unit
 ) {
-    val viewModel = hiltViewModel<SettingsViewModel>()
-    val state by viewModel.uiState.collectAsState()
-
     val view = LocalView.current
     val window = (view.context as Activity).window
     window.statusBarColor = MaterialTheme.colorScheme.background.toArgb()
+
+    val viewModel = hiltViewModel<SettingsViewModel>()
+    val state by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(state.goToHome) {
+        if (state.goToHome) {
+            onGoToHome()
+            viewModel.goToHome(false)
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -124,9 +129,7 @@ fun SettingsScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                 keyboardActions = KeyboardActions(
                     onDone = {
-                        if (state.apiKey.isNotBlank()) {
-                            onSubmit(state.apiKey)
-                        }
+                        viewModel.saveApiKey()
                     }
                 ),
                 modifier = Modifier.fillMaxWidth(),
@@ -152,9 +155,7 @@ fun SettingsScreen(
 
             Button(
                 onClick = {
-                    if (state.apiKey.isNotBlank()) {
-                        onSubmit(state.apiKey)
-                    }
+                    viewModel.saveApiKey()
                 },
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
