@@ -12,10 +12,17 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.paradoxo.avva.service.launcherService.AvvaVoiceInteractionService
 import com.paradoxo.avva.ui.main.HomeScreen
+import com.paradoxo.avva.ui.main.HomeViewModel
+import com.paradoxo.avva.ui.settings.SettingsScreen
 import com.paradoxo.avva.ui.theme.AvvATheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -29,14 +36,32 @@ class MainActivity : ComponentActivity() {
         setContent {
             WindowInsetsSetup()
             AvvATheme {
-                HomeScreen(
-                    openTutorial = {
-                        openTutorial()
-                    },
-                    openAssistantActivity = {
-                        openAssistantActivity()
-                    }
-                )
+                val viewModel = hiltViewModel<HomeViewModel>()
+                val state by viewModel.uiState.collectAsState()
+
+
+                if (state.showSettingsScreen) {
+                    SettingsScreen(
+                        onSubmit = {
+                            viewModel.showSettingsScreen(false)
+                        },
+                        onDismiss = {
+                            viewModel.showSettingsScreen(false)
+                        }
+                    )
+                } else {
+                    HomeScreen(
+                        openTutorial = {
+                            openTutorial()
+                        },
+                        openAssistantActivity = {
+                            openAssistantActivity()
+                        },
+                        openSettings = {
+                            viewModel.showSettingsScreen(true)
+                        }
+                    )
+                }
             }
         }
     }
