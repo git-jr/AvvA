@@ -8,7 +8,7 @@ import com.google.ai.client.generativeai.type.generationConfig
 import com.paradoxo.avva.model.Message
 import com.paradoxo.avva.model.Author
 
-const val MODEL_NAME: String = "gemini-1.5-flash"
+const val MODEL_NAME: String = "gemini-2.0-flash"
 
 class GeminiAvvA(
     private var apiKey: String

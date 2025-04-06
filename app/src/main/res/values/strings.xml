@@ -48,10 +48,13 @@
     <string name="accept">Accept</string>
     <string name="decline">Decline</string>
     <string name="custom_key">Custom key</string>
+    <string name="key">Key</string>
 
     <string name="aviso_1_acesso_api_key">To make the app work, you need to enter an access key/api key</string>
     <string name="aviso_2_acesso_api_key">You can quickly generate a key through the official Google website.</string>
     <string name="aviso_3_acesso_api_key">Your key will only be used during the session and will NOT be stored with us</string>
     <string name="gerar_chave_no_site_oficial">Gerar chave no site oficial</string>
+
+    <string name="close">Close</string>
 
 </resources>

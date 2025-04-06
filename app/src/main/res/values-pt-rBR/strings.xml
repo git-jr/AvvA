@@ -49,11 +49,14 @@
     <string name="accept">Aceitar</string>
     <string name="decline">Recusar</string>
     <string name="custom_key">Chave customizada</string>
+    <string name="key">Chave</string>
 
 
     <string name="aviso_1_acesso_api_key">Para que o app possa funcionar é necessário digitar uma chave de acesso/api key</string>
     <string name="aviso_2_acesso_api_key">Você pode gerar uma chave rapidamente através do site oficial da Google.</string>
     <string name="aviso_3_acesso_api_key">Sua chave será usada somente durante a sessão e NÃO ficará armazenada conosco</string>
     <string name="gerar_chave_no_site_oficial">Gerar chave no site oficial</string>
+
+    <string name="close">Fechar</string>
 
 </resources>

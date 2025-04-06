@@ -3,7 +3,6 @@ package com.paradoxo.avva.ui.settings
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -45,6 +44,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.paradoxo.avva.R
 
@@ -77,12 +77,12 @@ fun SettingsScreen(
                         titleContentColor = MaterialTheme.colorScheme.onBackground,
                         navigationIconContentColor = MaterialTheme.colorScheme.onBackground
                     ),
-                    title = { Text("Chave customizada") },
+                    title = { Text(stringResource(R.string.custom_key)) },
                     navigationIcon = {
                         IconButton(onClick = onDismiss) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                contentDescription = "Close"
+                                contentDescription = stringResource(R.string.close)
                             )
                         }
                     }
@@ -124,7 +124,7 @@ fun SettingsScreen(
             OutlinedTextField(
                 value = state.apiKey,
                 onValueChange = { viewModel.setApiKey(it) },
-                label = { Text("Chave") },
+                label = { Text(stringResource(R.string.key)) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                 keyboardActions = KeyboardActions(
@@ -196,6 +196,6 @@ fun SettingsScreen(
 
 fun onOpenApiSite(context: Context) {
     val uriString = "https://aistudio.google.com/app/apikey"
-    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uriString))
+    val intent = Intent(Intent.ACTION_VIEW, uriString.toUri())
     context.startActivity(intent)
 }
