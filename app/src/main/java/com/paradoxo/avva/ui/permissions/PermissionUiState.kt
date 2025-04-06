@@ -6,4 +6,5 @@ data class PermissionUiState(
     val avvaIsDefaultAssistant: Boolean = false,
     val avvaIsAccessibility: Boolean = false,
     val showDialogAccessibility: Boolean = false,
+    val needShowDialogAccessibility: Boolean = true,
 )

@@ -1,14 +1,15 @@
 package com.paradoxo.avva.ui.assistant
 
+import android.util.DisplayMetrics
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.paradoxo.avva.dataStore.UserPreferencesDataStore
 import com.paradoxo.avva.gemini.GeminiAvvA
-import com.paradoxo.avva.model.Message
 import com.paradoxo.avva.model.Author
-import com.paradoxo.avva.speechToText.SpeechToText
+import com.paradoxo.avva.model.Message
 import com.paradoxo.avva.service.accessibilityService.clickAccessibilityService
+import com.paradoxo.avva.speechToText.SpeechToText
 import com.paradoxo.avva.util.ActionHandler
 import com.paradoxo.avva.util.BitmapUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -128,7 +129,7 @@ class AssistantViewModel @Inject constructor(
 
 
     fun toggleListening(notifyNothingListened: Boolean = false) {
-        Log.e("SpeechToText47", "startListening chamado no viewmodel ${uiState.value.isListening}")
+        Log.e("SpeechToText", "startListening chamado no viewmodel ${uiState.value.isListening}")
         if (uiState.value.isListening) {
             speechToText.stopListening()
         } else {

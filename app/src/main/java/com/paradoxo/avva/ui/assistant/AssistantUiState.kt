@@ -13,4 +13,8 @@ data class AssistantUiState(
     val isErrorListening: Boolean = false,
     val entryText: String = "",
     val enableEdit: Boolean = true,
+    val centerX: Int = 0,
+    val centerY: Int = 0,
+    val endYDown: Int = 0,
+    val endYUp: Int = 0,
 )

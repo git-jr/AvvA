@@ -2,6 +2,7 @@ package com.paradoxo.avva.dataStore
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
@@ -13,6 +14,7 @@ class UserPreferencesDataStore @Inject constructor(
 ) {
     object PreferencesKey {
         val apiKey = stringPreferencesKey("customApiKey")
+        val needShowAccessibilityDialog = booleanPreferencesKey("needShowAccessibilityDialog")
     }
 
     suspend fun saveApiKey(score: String) {
@@ -24,6 +26,18 @@ class UserPreferencesDataStore @Inject constructor(
     fun getApiKey(): Flow<String> {
         return dataStore.data.map {
             it[PreferencesKey.apiKey] ?: ""
+        }
+    }
+
+    suspend fun saveNeedShowAccessibilityDialog(show: Boolean) {
+        dataStore.edit { edit ->
+            edit[PreferencesKey.needShowAccessibilityDialog] = show
+        }
+    }
+
+    fun getNeedShowAccessibilityDialog(): Flow<Boolean> {
+        return dataStore.data.map {
+            it[PreferencesKey.needShowAccessibilityDialog] != false
         }
     }
 }
