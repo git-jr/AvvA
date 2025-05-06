@@ -9,6 +9,8 @@
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <application
         android:name=".Application"
         android:allowBackup="true"
@@ -72,6 +74,10 @@
         <service
             android:name=".service.launcherService.AvvaAssistantSessionService"
             android:permission="android.permission.BIND_VOICE_INTERACTION" />
+
+        <service
+            android:name=".service.notificationService.NotificationService"
+            android:exported="false" />
     </application>
 
 </manifest>

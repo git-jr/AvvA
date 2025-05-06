@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.paradoxo.avva.service.launcherService.AvvaVoiceInteractionService
+import com.paradoxo.avva.service.notificationService.NotificationService
 import com.paradoxo.avva.ui.main.HomeScreen
 import com.paradoxo.avva.ui.main.HomeViewModel
 import com.paradoxo.avva.ui.settings.SettingsScreen
@@ -62,6 +63,11 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+
+        getNotificationPermission()
+
+
+        startNotificationService()
     }
 
     @Composable
@@ -91,5 +97,20 @@ class MainActivity : ComponentActivity() {
         val intent = Intent(Intent.ACTION_VIEW)
         intent.data = Uri.parse("https://paradoxo.tech/avva")
         startActivity(intent)
+    }
+
+    private fun getNotificationPermission() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            if (!androidx.core.app.NotificationManagerCompat.from(this).areNotificationsEnabled()) {
+                val intent = Intent(android.provider.Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                intent.putExtra(android.provider.Settings.EXTRA_APP_PACKAGE, packageName)
+                startActivity(intent)
+            }
+        }
+    }
+
+    private fun startNotificationService() {
+        val intent = Intent(this, NotificationService::class.java)
+        startService(intent)
     }
 }
