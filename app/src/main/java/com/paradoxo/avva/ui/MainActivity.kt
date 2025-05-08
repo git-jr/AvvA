@@ -23,6 +23,7 @@ import com.paradoxo.avva.ui.main.HomeScreen
 import com.paradoxo.avva.ui.main.HomeViewModel
 import com.paradoxo.avva.ui.settings.SettingsScreen
 import com.paradoxo.avva.ui.theme.AvvATheme
+import com.paradoxo.avva.ui.voicedetection.AudioClassifierScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -38,28 +39,33 @@ class MainActivity : ComponentActivity() {
                 val viewModel = hiltViewModel<HomeViewModel>()
                 val state by viewModel.uiState.collectAsState()
 
+                val showVoiceCalibration = true
 
-                if (state.showSettingsScreen) {
-                    SettingsScreen(
-                        onGoToHome = {
-                            viewModel.showSettingsScreen(false)
-                        },
-                        onDismiss = {
-                            viewModel.showSettingsScreen(false)
-                        }
-                    )
+                if (showVoiceCalibration) {
+                    AudioClassifierScreen()
                 } else {
-                    HomeScreen(
-                        openTutorial = {
-                            openTutorial()
-                        },
-                        openAssistantActivity = {
-                            openAssistantActivity()
-                        },
-                        openSettings = {
-                            viewModel.showSettingsScreen(true)
-                        }
-                    )
+                    if (state.showSettingsScreen) {
+                        SettingsScreen(
+                            onGoToHome = {
+                                viewModel.showSettingsScreen(false)
+                            },
+                            onDismiss = {
+                                viewModel.showSettingsScreen(false)
+                            }
+                        )
+                    } else {
+                        HomeScreen(
+                            openTutorial = {
+                                openTutorial()
+                            },
+                            openAssistantActivity = {
+                                openAssistantActivity()
+                            },
+                            openSettings = {
+                                viewModel.showSettingsScreen(true)
+                            }
+                        )
+                    }
                 }
             }
         }

@@ -85,6 +85,10 @@ dependencies {
     implementation(libs.compose.markdown)
 
     implementation(libs.datastore)
+
+
+    // Mediapipe
+    implementation (libs.mediapipe.tasks.audio)
 }
 java {
     toolchain {
