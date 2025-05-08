@@ -60,8 +60,7 @@ class AudioClassifierHelper(
             val options = optionsBuilder.build()
 
             // Create the classifier and required supporting objects
-            audioClassifier =
-                AudioClassifier.createFromOptions(context, options)
+            audioClassifier = AudioClassifier.createFromOptions(context, options)
             if (runningMode == RunningMode.AUDIO_STREAM) {
 
                 recorder = audioClassifier!!.createAudioRecord(
@@ -85,16 +84,14 @@ class AudioClassifierHelper(
                 "Audio Classifier failed to initialize. See error logs for details"
             )
 
-            Log.e(
-                TAG, "MP task failed to load with error: " + e.message
-            )
+            Log.e(TAG, "MP task failed to load with error 1: $e")
         } catch (e: RuntimeException) {
             listener?.onError(
                 "Audio Classifier failed to initialize. See error logs for details"
             )
 
             Log.e(
-                TAG, "MP task failed to load with error: " + e.message
+                TAG, "MP task failed to load with error 2: " + e.message
             )
         }
     }

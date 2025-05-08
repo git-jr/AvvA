@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
                 val viewModel = hiltViewModel<HomeViewModel>()
                 val state by viewModel.uiState.collectAsState()
 
-                val showVoiceCalibration = true
+                val showVoiceCalibration = false
 
                 if (showVoiceCalibration) {
                     AudioClassifierScreen()

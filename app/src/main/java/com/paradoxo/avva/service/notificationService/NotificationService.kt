@@ -7,20 +7,32 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.IBinder
+import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.viewModelScope
+import com.google.mediapipe.tasks.components.containers.Category
 import com.paradoxo.avva.R
+import com.paradoxo.avva.ui.voicedetection.AudioClassifierHelper
+import com.paradoxo.avva.ui.voicedetection.AudioClassifierHelper.ResultBundle
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.net.URL
+import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
+@AndroidEntryPoint
 class NotificationService : Service() {
 
     lateinit var job: Job
     lateinit var coroutineScope: CoroutineScope
+
+    @Inject
+    lateinit var audioClassifierHelper: AudioClassifierHelper
+
 
     override fun onCreate() {
         super.onCreate()
@@ -35,6 +47,9 @@ class NotificationService : Service() {
                 "https://raw.githubusercontent.com/git-jr/sample-files/refs/heads/main/images/ai-generate/cerejeira-neon-1.webp"
             )
         }
+
+        audioClassifierHelper.initClassifier()
+        setResultListener()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -105,5 +120,29 @@ class NotificationService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         job.cancel()
+        audioClassifierHelper.stopAudioClassification()
+    }
+
+    private fun setResultListener() {
+        val resultListener = object : AudioClassifierHelper.ClassifierListener {
+            override fun onResult(resultBundle: ResultBundle) {
+                coroutineScope.launch {
+                    resultBundle.results[0].classificationResults().first()
+                        .classifications()?.get(0)?.categories()
+                        ?.let { categoryList: List<Category> ->
+                            Log.d(
+                                "ServiceAudioClassifier",
+                                "ServiceAudioClassifier Category List: $categoryList"
+                            )
+                        }
+
+                }
+            }
+
+            override fun onError(error: String) {
+                Log.e("ServiceAudioClassifier", "ServiceAudioClassifier Error: $error")
+            }
+        }
+        audioClassifierHelper.setListener(resultListener)
     }
 }
